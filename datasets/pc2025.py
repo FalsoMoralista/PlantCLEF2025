@@ -13,7 +13,8 @@ def build_dataset(is_train, image_folder, transform):
     dataset = datasets.ImageFolder(root, transform=transform)
     return dataset
 
-
+# Average width is 2776 (+- 414), average height is 2769 (+- 362) 
+# therefore we will resize to a 2816 square image 
 def build_transform(is_training, data_config, N=None):
     transform = transforms.Compose([
         transforms.Resize(518, interpolation=PIL.Image.InterpolationMode.BICUBIC),  # Ensures the shorter side = 518
@@ -24,7 +25,11 @@ def build_transform(is_training, data_config, N=None):
 
     # TODO: test this:
     transform = transforms.Compose([
-        Patchify(N)
+        transforms.Resize(2816, interpolation=PIL.Image.BICUBIC),  # Optional: scale to be divisible by 16
+        transforms.CenterCrop(2816),  # Optional: crop square
+        transforms.ToTensor(),  # Convert to tensor: (C, H, W)
+        transforms.Normalize(mean=data_config['mean'], std=data_config['std']),
+        Patchify(n=16),  # Now that it's a tensor, we can safely patchify
     ])
     return transform
 
