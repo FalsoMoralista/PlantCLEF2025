@@ -30,7 +30,7 @@ def build_test_transform(data_config, n=None):
         transforms.Resize((2816,2816), interpolation=PIL.Image.BICUBIC),  # Optional: scale to be divisible by 16
         transforms.ToTensor(),  # Convert to tensor: (C, H, W)
         transforms.Normalize(mean=data_config['mean'], std=data_config['std']),
-        GridCropAndResize(crop_size=n),  # Now that it's a tensor, we can safely patchify
+        GridCropAndResize(crop_size=n),
     ])
 
 

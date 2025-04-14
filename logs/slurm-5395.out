@@ -1,0 +1,15 @@
+loaded params...
+{   'base_dir': '/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/',
+    'data': {   'class_mapping': 'pretrained_models/class_mapping.txt',
+                'species_mapping': 'pretrained_models/species_id_to_name.txt',
+                'test_data': '/home/rtcalumby/adam/luciano/PlantCLEF2025/test_dataset/'},
+    'k_means': {'K': 7806},
+    'patches': {'N': [16, 32, 64, 80, 128]},
+    'pretrained_path': 'pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar'}
+Test dataset created
+Traceback (most recent call last):
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/main.py", line 29, in <module>
+    app_main(args=params)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/engine_baseline.py", line 69, in main
+    id = name.replace('.jpg','')
+AttributeError: 'list' object has no attribute 'replace'

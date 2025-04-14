@@ -7,6 +7,7 @@ from torch.utils.data import DataLoader
 from PIL import Image
 from src.helper import (load_class_mapping, load_species_mapping, build_test_transform)
 from src.k_means import KMeansModule
+from datasets.pc2025 import build_test_dataset
 
 def load_images():
     return 0
@@ -50,21 +51,21 @@ def main(args):
         # get model specific transforms (normalization, resize)
         data_config = timm.data.resolve_model_data_config(model)
         
-        crop_and_resize = build_test_transform(data_config, n=n)    
-        image_list = os.listdir(test_dir)
-        
-        batch_size = 128
+        test_dataset, test_dataloader = build_test_dataset(image_folder=test_dir,
+                                                           data_config=data_config,
+                                                           num_workers=0,
+                                                           n=n,
+                                                           batch_size=1)
+
+        batch_size = 256
         feature_bank = {}
-        for image in image_list:
-            #print('Img name:', image)
-            img = Image.open(test_dir+image)
-            preprocessed_images = crop_and_resize(img) 
-            
-            id = image.replace('.jpg','')
+        for im_id, (preprocessed_images, _, name) in enumerate(test_dataloader):
+            print('Image [',(im_id+1),'/2105]')
+            id = name[0].replace('.jpg','')            
             feature_bank[id] = []
-            loader = DataLoader(preprocessed_images, batch_size=batch_size, shuffle=False, drop_last=False)
+            loader = DataLoader(preprocessed_images.squeeze(0), batch_size=batch_size, shuffle=False, drop_last=False, num_workers=0, pin_memory=True)
             for i, batch in enumerate(loader):
-                x = batch.to(device)
+                x = batch.to(device, non_blocking=True)
                 with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=True):
                     with torch.inference_mode():
                         output = model(x).to(device=torch.device('cpu'))

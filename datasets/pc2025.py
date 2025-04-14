@@ -6,55 +6,59 @@ import os
 from torchvision import datasets, transforms
 from timm.data import create_transform
 
-from util.patchify import Patchify
+from util.crop import GridCropAndResize
 
-def build_dataset(is_train, image_folder, transform):
-    root = os.path.join(image_folder, 'train' if is_train else 'val')
-    dataset = datasets.ImageFolder(root, transform=transform)
-    return dataset
+class CustomImageFolder(datasets.ImageFolder):
+    def __init__(self, root, transform=None):
+        super(CustomImageFolder, self).__init__(root, transform)
+        
+    def __getitem__(self, index):
+        # Get image and label using the parent method
+        img, label = super(CustomImageFolder, self).__getitem__(index)
+        
+        # Get the path and extract the filename
+        path = self.samples[index][0]
+        filename = os.path.basename(path)
+        
+        # Return image, label, and filename
+        return img, label, filename
 
-# Average width is 2776 (+- 414), average height is 2769 (+- 362) 
-# therefore we will resize to a 2816 square image 
-def build_transform(is_training, data_config, N=None):
+
+def build_test_transform(data_config, n=None):
+    # Transform by doing resize then crop may keep the aspect ratio but may cut parts of the image. 
+    # The transform below may distort the image, as aspect ratio may not be preserved but the content remains. 
     transform = transforms.Compose([
-        transforms.Resize(518, interpolation=PIL.Image.InterpolationMode.BICUBIC),  # Ensures the shorter side = 518
-        transforms.CenterCrop(518* data_config.crop_pct),  # No-op when crop_pct = 1.0, just keeps size 518x518
-        transforms.ToTensor(),  # Converts PIL image to PyTorch Tensor (C, H, W) in [0, 1]
-        transforms.Normalize(mean=data_config.mean, std=data_config.std),  # ImageNet normalization
-    ])
-
-    # TODO: test this:
-    transform = transforms.Compose([
-        transforms.Resize(2816, interpolation=PIL.Image.BICUBIC),  # Optional: scale to be divisible by 16
-        transforms.CenterCrop(2816),  # Optional: crop square
+        transforms.Resize((2816,2816), interpolation=PIL.Image.BICUBIC),  # Optional: scale to be divisible by 16
         transforms.ToTensor(),  # Convert to tensor: (C, H, W)
         transforms.Normalize(mean=data_config['mean'], std=data_config['std']),
-        Patchify(n=16),  # Now that it's a tensor, we can safely patchify
+        GridCropAndResize(crop_size=n),
     ])
+
+
     return transform
 
-
-def build_test_dataset(image_folder,data_config, is_training, batch_size, N=None):
+def build_test_dataset(image_folder, data_config, batch_size=1, num_workers=16, n=None):
     
-    transform = build_transform(is_training, data_config)
+    transform = build_test_transform(data_config, n=n)
 
-    dataset = build_dataset(is_train=is_training, transform=transform, image_folder=image_folder) 
+    dataset = CustomImageFolder(image_folder, transform=transform)
     
     print('Test dataset created')
 
-    dist_sampler = torch.utils.data.distributed.DistributedSampler(
-        dataset=dataset,
-        num_replicas=1,
-        rank=0)
+    #dist_sampler = torch.utils.data.distributed.DistributedSampler(
+    #    dataset=dataset,
+    #    num_replicas=1,
+    #    rank=0)
     
     data_loader = torch.utils.data.DataLoader(
         dataset,
         collate_fn=None,
-        sampler=dist_sampler,
+        #sampler=dist_sampler,
         batch_size=batch_size,
         drop_last=False,
         pin_memory=True,
-        num_workers=8,
+        num_workers=num_workers,
+        shuffle=False,
         persistent_workers=False)    
-    return dataset, data_loader, dist_sampler
+    return dataset, data_loader
 
