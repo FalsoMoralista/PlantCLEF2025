@@ -17,12 +17,12 @@ def load_species_mapping(species_map_file):
 
 
 def build_test_transform(data_config, n=None):
-    transform = transforms.Compose([
-        transforms.Resize(518, interpolation=PIL.Image.InterpolationMode.BICUBIC),  # Ensures the shorter side = 518
-        transforms.CenterCrop(518* data_config.crop_pct),  # No-op when crop_pct = 1.0, just keeps size 518x518
-        transforms.ToTensor(),  # Converts PIL image to PyTorch Tensor (C, H, W) in [0, 1]
-        transforms.Normalize(mean=data_config.mean, std=data_config.std),  # ImageNet normalization
-    ])
+    #transform = transforms.Compose([
+    #    transforms.Resize(518, interpolation=PIL.Image.InterpolationMode.BICUBIC),  # Ensures the shorter side = 518
+    #    transforms.CenterCrop(518* data_config.crop_pct),  # No-op when crop_pct = 1.0, just keeps size 518x518
+    #    transforms.ToTensor(),  # Converts PIL image to PyTorch Tensor (C, H, W) in [0, 1]
+    #    transforms.Normalize(mean=data_config.mean, std=data_config.std),  # ImageNet normalization
+    #])
 
     # Transform above does resize then crop. It keeps the aspect ratio but may cut parts of the image. 
     # The transform below may distort the image, as aspect ratio may not be preserved but the content remains. 

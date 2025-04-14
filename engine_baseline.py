@@ -1,10 +1,12 @@
 from urllib.request import urlopen
-from PIL import Image
-import timm
-import torch
-from src.helper import (load_class_mapping, load_species_mapping, build_test_transform)
-from datasets import build_test_dataset
 import os
+import torch
+import timm
+import faiss
+from torch.utils.data import DataLoader
+from PIL import Image
+from src.helper import (load_class_mapping, load_species_mapping, build_test_transform)
+from src.k_means import KMeansModule
 
 def load_images():
     return 0
@@ -31,28 +33,45 @@ def main(args):
     cid_to_spid = load_class_mapping(class_mapping)
     spid_to_sp = load_species_mapping(species_mapping)
         
-    device = torch.device(args['devices'][0])    
+    rank = 0
+    device = torch.device(args['devices'][rank])    
+
     model = timm.create_model('vit_base_patch14_reg4_dinov2.lvd142m', pretrained=False, num_classes=len(cid_to_spid), checkpoint_path=pretrained_path)
     model.head = torch.nn.Identity() # Replace classification head by identity layer for feature extraction
-    
     model = model.to(device)
     model = model.eval()
 
-    # get model specific transforms (normalization, resize)
-    data_config = timm.data.resolve_model_data_config(model)
-    
-    crop_and_resize = build_test_transform(data_config, n=N[0])    
-    image_list = os.listdir(base_dir+test_dir)
-    
-    feature_bank = {}
-    for image in image_list:
-        print('Img name:', image)
-        im = Image.open(test_dir+image)
-        im = crop_and_resize(im)
-        break        
+    resources = faiss.StandardGpuResources()
+    config = faiss.GpuIndexFlatConfig()
+    config.device = rank
+    for n in N:
+        k_means = KMeansModule(K=K, dimensionality=768, config=config, resources=resources)
 
-
-
+        # get model specific transforms (normalization, resize)
+        data_config = timm.data.resolve_model_data_config(model)
+        
+        crop_and_resize = build_test_transform(data_config, n=n)    
+        image_list = os.listdir(test_dir)
+        
+        batch_size = 128
+        feature_bank = {}
+        for image in image_list:
+            #print('Img name:', image)
+            img = Image.open(test_dir+image)
+            preprocessed_images = crop_and_resize(img) 
+            
+            id = image.replace('.jpg','')
+            feature_bank[id] = []
+            loader = DataLoader(preprocessed_images, batch_size=batch_size, shuffle=False, drop_last=False)
+            for i, batch in enumerate(loader):
+                x = batch.to(device)
+                with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=True):
+                    with torch.inference_mode():
+                        output = model(x).to(device=torch.device('cpu'))
+                feature_bank[id].append(output)                    
+        # -- 
+        energy = k_means.train(cached_features=feature_bank)
+        print('K-Means free energy', energy, 'n:', n)
 
     #img = None
     #if 'https://' in args.image or 'http://' in  args.image:

@@ -8,4 +8,4 @@ pretrained_path: pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onl
 data:
   class_mapping: pretrained_models/class_mapping.txt
   species_mapping: pretrained_models/species_id_to_name.txt
-  test_data: test_dataset/
+  test_data: /home/rtcalumby/adam/luciano/PlantCLEF2025/test_dataset/
