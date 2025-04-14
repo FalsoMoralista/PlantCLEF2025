@@ -7,9 +7,7 @@ loaded params...
     'patches': {'N': [16, 32, 64, 80, 128]},
     'pretrained_path': 'pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar'}
 Test dataset created
-Traceback (most recent call last):
-  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/main.py", line 29, in <module>
-    app_main(args=params)
-  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/engine_baseline.py", line 64, in main
-    for im_id, (preprocessed_images, name) in enumerate(test_dataloader):
-ValueError: too many values to unpack (expected 2)
+Image [1/2105]
+Image [2/2105]
+Image [3/2105]
+Image [4/2105]

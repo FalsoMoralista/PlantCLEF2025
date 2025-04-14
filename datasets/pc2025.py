@@ -28,7 +28,7 @@ def build_test_transform(data_config, n=None):
     # Transform by doing resize then crop may keep the aspect ratio but may cut parts of the image. 
     # The transform below may distort the image, as aspect ratio may not be preserved but the content remains. 
     transform = transforms.Compose([
-        transforms.Resize((2816,2816), interpolation=PIL.Image.BICUBIC),  # Optional: scale to be divisible by 16
+        transforms.Resize((2048,1024), interpolation=PIL.Image.BICUBIC),  # Optional: scale to be divisible by 16
         transforms.ToTensor(),  # Convert to tensor: (C, H, W)
         transforms.Normalize(mean=data_config['mean'], std=data_config['std']),
         GridCropAndResize(crop_size=n),
@@ -56,8 +56,9 @@ def build_test_dataset(image_folder, data_config, batch_size=1, num_workers=16, 
         #sampler=dist_sampler,
         batch_size=batch_size,
         drop_last=False,
-        pin_memory=True,
+        pin_memory=False,
         num_workers=num_workers,
+        prefetch_factor=1,
         shuffle=False,
         persistent_workers=False)    
     return dataset, data_loader

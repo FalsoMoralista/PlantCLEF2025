@@ -5,9 +5,9 @@ import timm
 import faiss
 from torch.utils.data import DataLoader
 from PIL import Image
-from src.helper import (load_class_mapping, load_species_mapping, build_test_transform)
+from src.helper import (load_class_mapping, load_species_mapping)
 from src.k_means import KMeansModule
-from datasets.pc2025 import build_test_dataset
+from datasets.pc2025 import build_test_dataset, build_test_transform
 
 def load_images():
     return 0
@@ -52,18 +52,17 @@ def main(args):
         data_config = timm.data.resolve_model_data_config(model)
         
         test_dataset, test_dataloader = build_test_dataset(image_folder=test_dir,
-                                                           data_config=data_config,
-                                                           num_workers=0,
-                                                           n=n,
-                                                           batch_size=1)
-
-        batch_size = 256
+                                                    data_config=data_config,
+                                                    num_workers=16,
+                                                    n=n,
+                                                    batch_size=1)
+        batch_size = 1024
         feature_bank = {}
         for im_id, (preprocessed_images, _, name) in enumerate(test_dataloader):
-            print('Image [',(im_id+1),'/2105]')
-            id = name[0].replace('.jpg','')            
+            print(f'Image [{im_id+1}/2105]', flush=True)
+            id = name[0].replace('.jpg','')   
             feature_bank[id] = []
-            loader = DataLoader(preprocessed_images.squeeze(0), batch_size=batch_size, shuffle=False, drop_last=False, num_workers=0, pin_memory=True)
+            loader = DataLoader(preprocessed_images.squeeze(0), batch_size=batch_size, shuffle=False, drop_last=False, num_workers=32, pin_memory=True)
             for i, batch in enumerate(loader):
                 x = batch.to(device, non_blocking=True)
                 with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=True):
@@ -71,6 +70,10 @@ def main(args):
                         output = model(x).to(device=torch.device('cpu'))
                 feature_bank[id].append(output)                    
         # -- 
+        # Assert everything went fine
+        cnt = [len(feature_bank[key]) for key in feature_bank.keys()]    
+        problem_size = (2048/n)*(1024/n) * len(test_dataset)
+        assert sum(cnt) == problem_size, 'Cache not compatible, corrupted or missing'
         energy = k_means.train(cached_features=feature_bank)
         print('K-Means free energy', energy, 'n:', n)
 
