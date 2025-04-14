@@ -27,10 +27,8 @@ class KMeansModule:
             image_list = cached_features[id]
             x.append(torch.cat(image_list))
         x = torch.cat(x)
-        print('x size', x.size())
         # Then train K-means model for one iteration to initialize centroids (kmeans++ init)
         self.kmeans.train(x.numpy()) 
-        
         # Replace the regular index by a gpu one     
         #index_flat = self.n_kmeans[class_id][k].index
         #gpu_index_flat = faiss.index_cpu_to_gpu(self.resources, rank, index_flat)
