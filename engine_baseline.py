@@ -1,23 +1,38 @@
-from urllib.request import urlopen
 import os
+# -- FOR DISTRIBUTED TRAINING ENSURE ONLY 1 DEVICE VISIBLE PER PROCESS
+try:
+    # -- WARNING: IF DOING DISTRIBUTED TRAINING ON A NON-SLURM CLUSTER, MAKE
+    # --          SURE TO UPDATE THIS TO GET LOCAL-RANK ON NODE, OR ENSURE
+    # --          THAT YOUR JOBS ARE LAUNCHED WITH ONLY 1 DEVICE VISIBLE
+    # --          TO EACH PROCESS
+    os.environ['CUDA_VISIBLE_DEVICES'] = os.environ['SLURM_LOCALID']
+    os.environ['TORCH_DISTRIBUTED_DEBUG'] = 'DETAIL'
+except Exception:
+    pass
+
+from urllib.request import urlopen
 import torch
 import timm
 import faiss
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, DistributedSampler
 from PIL import Image
 from src.helper import (load_class_mapping, load_species_mapping)
 from src.k_means import KMeansModule
 from datasets.pc2025 import build_test_dataset, build_test_transform
+import logging
+import sys
+import multiprocessing as mp
+from util.distributed import init_distributed
+import torch.distributed as dist
 
-def load_images():
-    return 0
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logger = logging.getLogger()
 
 def main(args):
     
     # -- Model
     pretrained_path = args['pretrained_path']
     
-
     # -- Clustering 
     K = args['k_means']['K']
 
@@ -29,13 +44,24 @@ def main(args):
     test_dir = args['data']['test_data']
     class_mapping = args['data']['class_mapping']
     species_mapping = args['data']['species_mapping']
+    # --
 
+    try:
+        mp.set_start_method('spawn')
+    except Exception:
+        pass
+
+    # -- init torch distributed backend
+    world_size, rank = init_distributed()
+    logger.info(f'Initialized (rank/world-size) {rank}/{world_size}')
+    if rank > 0:
+        logger.setLevel(logging.ERROR)    
 
     cid_to_spid = load_class_mapping(class_mapping)
     spid_to_sp = load_species_mapping(species_mapping)
         
     rank = 0
-    device = torch.device(args['devices'][rank])    
+    device = torch.device(f'cuda:{rank}')
 
     model = timm.create_model('vit_base_patch14_reg4_dinov2.lvd142m', pretrained=False, num_classes=len(cid_to_spid), checkpoint_path=pretrained_path)
     model.head = torch.nn.Identity() # Replace classification head by identity layer for feature extraction
@@ -45,37 +71,91 @@ def main(args):
     resources = faiss.StandardGpuResources()
     config = faiss.GpuIndexFlatConfig()
     config.device = rank
+
     for n in N:
-        k_means = KMeansModule(K=K, dimensionality=768, config=config, resources=resources)
+        if rank == 0:
+            k_means = KMeansModule(K=K, dimensionality=768, config=config, resources=resources)
 
         # get model specific transforms (normalization, resize)
         data_config = timm.data.resolve_model_data_config(model)
         
         test_dataset, test_dataloader = build_test_dataset(image_folder=test_dir,
                                                     data_config=data_config,
-                                                    num_workers=16,
+                                                    num_workers=4,
                                                     n=n,
                                                     batch_size=1)
         batch_size = 1024
         feature_bank = {}
         for im_id, (preprocessed_images, _, name) in enumerate(test_dataloader):
-            print(f'Image [{im_id+1}/2105]', flush=True)
+            logger.info(f'Image [{im_id+1}/2105]')
+            
             id = name[0].replace('.jpg','')   
             feature_bank[id] = []
-            loader = DataLoader(preprocessed_images.squeeze(0), batch_size=batch_size, shuffle=False, drop_last=False, num_workers=32, pin_memory=True)
-            for i, batch in enumerate(loader):
-                x = batch.to(device, non_blocking=True)
+
+            def build_dist_patch_loader():
+                patches = preprocessed_images.squeeze(0)                            
+                patch_dataset = torch.utils.data.TensorDataset(patches)
+                patch_sampler = DistributedSampler(
+                    patch_dataset, 
+                    num_replicas=world_size,
+                    rank=rank,
+                    shuffle=False  
+                )            
+                patch_loader = DataLoader(
+                    patch_dataset,
+                    batch_size=batch_size,
+                    sampler=patch_sampler,
+                    shuffle=False,
+                    num_workers=0,
+                    pin_memory=True
+                )      
+                return patch_loader
+                              
+            patch_loader = build_dist_patch_loader()
+            for i, batch in enumerate(patch_loader):
+                x = batch[0].to(device, non_blocking=True)
                 with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=True):
                     with torch.inference_mode():
                         output = model(x).to(device=torch.device('cpu'))
-                feature_bank[id].append(output)                    
+                feature_bank[id].append(output)
+            # -- Gathering 
+            if world_size > 1:
+                # Convert cache to list format for gathering
+                local_cache_list = [(key, torch.stack(value)) for key, value in feature_bank.items()]
+
+                # Gather cache lists from all processes
+                all_cache_lists = [None for _ in range(world_size)]
+                dist.all_gather_object(all_cache_lists, local_cache_list) 
+
+                if rank == 0:
+                    aggregated_cache = {}
+                    for cache_list in all_cache_lists:
+                        for key, tensor_list in cache_list:
+                            if key not in aggregated_cache:
+                                aggregated_cache[key] = []
+                            aggregated_cache[key].append(tensor_list)  # Use append since tensor_list is already stacked
+
+                    # Convert aggregated_cache back to the dictionary format
+                    aggregated_cache = {key: torch.cat(tensor_list, dim=0) for key, tensor_list in aggregated_cache.items()}
+                else:
+                    aggregated_cache = None
+                # Create a list with one element (the dictionary) for broadcasting
+                object_list = [aggregated_cache]
+                dist.broadcast_object_list(object_list, src=0)
+
+                # Extract the dictionary from the list after broadcasting
+                aggregated_cache = object_list[0]
+                for key in aggregated_cache.keys():
+                    feature_bank[key].extend(aggregated_cache[key])
+                dist.barrier()
         # -- 
         # Assert everything went fine
-        cnt = [len(feature_bank[key]) for key in feature_bank.keys()]    
-        problem_size = (2048/n)*(1024/n) * len(test_dataset)
-        assert sum(cnt) == problem_size, 'Cache not compatible, corrupted or missing'
-        energy = k_means.train(cached_features=feature_bank)
-        print('K-Means free energy', energy, 'n:', n)
+        if rank == 0:
+            problem_size = (2048/n)*(1024/n) * len(test_dataset)
+            cnt = [len(feature_bank[key]) for key in feature_bank.keys()]    
+            assert sum(cnt) == problem_size, 'Cache not compatible, corrupted or missing'
+            energy = k_means.train(cached_features=feature_bank)
+            print('K-Means free energy', energy, 'n:', n)
 
     #img = None
     #if 'https://' in args.image or 'http://' in  args.image:

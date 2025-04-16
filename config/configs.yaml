@@ -3,6 +3,7 @@ k_means:
   K: 7806
 patches:
   N: [16, 32, 64, 80, 128]
+num_workers: 32
 base_dir: /home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/
 pretrained_path: pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar
 data:

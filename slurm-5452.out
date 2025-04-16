@@ -1,0 +1,106 @@
+INFO:root:called-params config/configs.yaml
+INFO:root:loaded params...
+INFO:root:{'k_means': {'K': 7806}, 'patches': {'N': [16, 32, 64, 80, 128]}, 'num_workers': 32, 'base_dir': '/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/', 'pretrained_path': 'pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar', 'data': {'class_mapping': 'pretrained_models/class_mapping.txt', 'species_mapping': 'pretrained_models/species_id_to_name.txt', 'test_data': '/home/rtcalumby/adam/luciano/PlantCLEF2025/test_dataset/'}}
+INFO:root:Running... (rank: 0/4)
+INFO:root:Initialized (rank/world-size) 0/4
+INFO:timm.models._helpers:Loaded state_dict_ema from checkpoint 'pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar'
+Test dataset created
+Test dataset created
+Test dataset created
+Test dataset created
+INFO:root:Image [1/2105]
+[rank2]:W0415 22:02:15.138584 140230246676288 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 6291905 hash value: 8959554337279681858
+[rank3]:W0415 22:02:15.911294 140660293961536 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 6291905 hash value: 9524359379151300553
+[rank1]:W0415 22:02:16.009872 140471467591488 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 6291905 hash value: 11603218482997666885
+[rank0]:W0415 22:02:16.122501 140159054464832 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 6291905 hash value: 9899645628336010978
+[rank2]:W0415 22:02:16.968045 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 6291905 hash value: 9349847047869496068
+[rank3]:W0415 22:02:16.971229 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 6291905 hash value: 9349847047869496068
+[rank0]:W0415 22:02:16.973970 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 6291905 hash value: 9349847047869496068
+[rank1]:W0415 22:02:16.978534 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 6291905 hash value: 9349847047869496068
+[rank2]:W0415 22:02:17.018102 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 6291905 hash value: 9349847047869496068
+[rank3]:W0415 22:02:17.021685 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 6291905 hash value: 9349847047869496068
+[rank0]:W0415 22:02:17.024660 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 6291905 hash value: 9349847047869496068
+[rank1]:W0415 22:02:17.028628 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 6291905 hash value: 9349847047869496068
+[rank2]:W0415 22:02:17.066406 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 6291905 hash value: 9349847047869496068
+[rank0]:W0415 22:02:17.070470 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 6291905 hash value: 9349847047869496068
+[rank3]:W0415 22:02:17.070765 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 6291905 hash value: 9349847047869496068
+[rank1]:W0415 22:02:17.076301 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 6291905 hash value: 9349847047869496068
+[rank2]:W0415 22:02:17.111641 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 6291905 hash value: 9349847047869496068
+[rank3]:W0415 22:02:17.117581 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 6291905 hash value: 9349847047869496068
+[rank0]:W0415 22:02:17.125856 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 6291905 hash value: 9349847047869496068
+[rank1]:W0415 22:02:17.142217 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 6291905 hash value: 9349847047869496068
+[rank0]:W0415 22:02:17.385697 140159054464832 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 25166271 hash value: 14155945631474857759
+[rank2]:W0415 22:02:17.442002 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 25166271 hash value: 14155945631474857759
+[rank1]:W0415 22:02:17.442374 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 25166271 hash value: 14155945631474857759
+[rank3]:W0415 22:02:17.446169 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 25166271 hash value: 14155945631474857759
+INFO:root:Image [2/2105]
+[rank0]:W0415 22:02:30.658850 140159054464832 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 37749523 hash value: 15509948083100052619
+[rank1]:W0415 22:02:32.959312 140471467591488 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 37749523 hash value: 13862604874972565005
+[rank2]:W0415 22:02:33.905165 140230246676288 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 37749523 hash value: 5181718452875357192
+[rank3]:W0415 22:02:34.338416 140660293961536 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 37749523 hash value: 8314830312144629986
+[rank2]:W0415 22:02:34.690125 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 37749523 hash value: 16440910092293741915
+[rank0]:W0415 22:02:34.694266 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 37749523 hash value: 16440910092293741915
+[rank3]:W0415 22:02:34.696933 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 37749523 hash value: 16440910092293741915
+[rank1]:W0415 22:02:34.702359 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 37749523 hash value: 16440910092293741915
+[rank3]:W0415 22:02:35.041959 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 37749523 hash value: 16440910092293741915
+[rank1]:W0415 22:02:35.048447 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 37749523 hash value: 16440910092293741915
+[rank2]:W0415 22:02:35.049055 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 37749523 hash value: 16440910092293741915
+[rank0]:W0415 22:02:35.054761 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 37749523 hash value: 16440910092293741915
+[rank3]:W0415 22:02:35.383457 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 37749523 hash value: 16440910092293741915
+[rank1]:W0415 22:02:35.388700 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 37749523 hash value: 16440910092293741915
+[rank2]:W0415 22:02:35.397566 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 37749523 hash value: 16440910092293741915
+[rank0]:W0415 22:02:35.407554 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 37749523 hash value: 16440910092293741915
+[rank3]:W0415 22:02:35.727241 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 37749523 hash value: 16440910092293741915
+[rank1]:W0415 22:02:35.730762 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 37749523 hash value: 16440910092293741915
+[rank2]:W0415 22:02:35.735989 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 37749523 hash value: 16440910092293741915
+[rank0]:W0415 22:02:35.757871 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 37749523 hash value: 16440910092293741915
+[rank0]:W0415 22:02:36.499954 140159054464832 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 150995727 hash value: 13333490640974686871
+[rank2]:W0415 22:02:36.823053 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 150995727 hash value: 13333490640974686871
+[rank1]:W0415 22:02:36.826619 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 150995727 hash value: 13333490640974686871
+[rank3]:W0415 22:02:36.834810 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 150995727 hash value: 13333490640974686871
+INFO:root:Image [3/2105]
+[rank0]:W0415 22:02:52.181303 140159054464832 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 195036260 hash value: 14477122807178463058
+[rank3]:W0415 22:02:54.415534 140660293961536 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 195036260 hash value: 16400573817569134326
+[rank1]:W0415 22:02:54.677675 140471467591488 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 195036260 hash value: 4170119169403896375
+[rank2]:W0415 22:02:55.289859 140230246676288 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 195036260 hash value: 11548994633118238363
+[rank2]:W0415 22:02:56.924997 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 195036260 hash value: 15119258254927596801
+[rank3]:W0415 22:02:56.929292 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 195036260 hash value: 15119258254927596801
+[rank1]:W0415 22:02:56.930599 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 195036260 hash value: 15119258254927596801
+[rank0]:W0415 22:02:56.961829 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 195036260 hash value: 15119258254927596801
+[rank3]:W0415 22:02:58.910224 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 195036260 hash value: 15119258254927596801
+[rank1]:W0415 22:02:58.918247 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 195036260 hash value: 15119258254927596801
+[rank0]:W0415 22:02:58.935869 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 195036260 hash value: 15119258254927596801
+[rank2]:W0415 22:02:58.946357 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 195036260 hash value: 15119258254927596801
+[rank3]:W0415 22:03:00.799633 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 195036260 hash value: 15119258254927596801
+[rank1]:W0415 22:03:00.825094 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 195036260 hash value: 15119258254927596801
+[rank0]:W0415 22:03:00.836170 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 195036260 hash value: 15119258254927596801
+[rank2]:W0415 22:03:00.851800 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 195036260 hash value: 15119258254927596801
+[rank3]:W0415 22:03:02.661869 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 195036260 hash value: 15119258254927596801
+[rank1]:W0415 22:03:02.706112 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 195036260 hash value: 15119258254927596801
+[rank0]:W0415 22:03:02.711541 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 195036260 hash value: 15119258254927596801
+[rank2]:W0415 22:03:02.721308 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 195036260 hash value: 15119258254927596801
+[rank0]:W0415 22:03:05.767885 140159054464832 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 780141662 hash value: 13082453973230684345
+[rank3]:W0415 22:03:07.355348 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 780141662 hash value: 13082453973230684345
+[rank2]:W0415 22:03:07.364021 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 780141662 hash value: 13082453973230684345
+[rank1]:W0415 22:03:07.365984 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 780141662 hash value: 13082453973230684345
+INFO:root:Image [4/2105]
+[rank1]:W0415 22:03:26.693727 140471467591488 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 981468597 hash value: 5496594915450014696
+[rank2]:W0415 22:03:27.999055 140230246676288 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 981468597 hash value: 10423891473540446995
+[rank0]:W0415 22:03:28.022607 140159054464832 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 981468597 hash value: 8293183814455854498
+[rank3]:W0415 22:03:28.117630 140660293961536 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 981468597 hash value: 7668246892659421943
+[rank1]:W0415 22:03:36.149233 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 981468597 hash value: 863252663663111195
+[rank0]:W0415 22:03:36.177105 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 981468597 hash value: 863252663663111195
+[rank2]:W0415 22:03:36.199482 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 981468597 hash value: 863252663663111195
+[rank3]:W0415 22:03:36.209714 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 981468597 hash value: 863252663663111195
+[rank1]:W0415 22:03:46.564188 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 981468597 hash value: 863252663663111195
+[rank0]:W0415 22:03:46.593340 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 981468597 hash value: 863252663663111195
+[rank2]:W0415 22:03:46.650000 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 981468597 hash value: 863252663663111195
+[rank3]:W0415 22:03:46.693997 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 981468597 hash value: 863252663663111195
+[rank1]:W0415 22:03:56.519936 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 981468597 hash value: 863252663663111195
+[rank0]:W0415 22:03:56.633261 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 981468597 hash value: 863252663663111195
+[rank2]:W0415 22:03:56.677559 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 981468597 hash value: 863252663663111195
+[rank3]:W0415 22:03:56.733851 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 981468597 hash value: 863252663663111195
+[rank1]:W0415 22:04:05.963431 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 981468597 hash value: 863252663663111195
+[rank0]:W0415 22:04:06.116609 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 981468597 hash value: 863252663663111195
+[rank2]:W0415 22:04:06.192444 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 981468597 hash value: 863252663663111195
+[rank3]:W0415 22:04:06.208924 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 981468597 hash value: 863252663663111195

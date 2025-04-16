@@ -10,4 +10,4 @@ Test dataset created
 Image [1/2105]
 Image [2/2105]
 Image [3/2105]
-Image [4/2105]
+slurmstepd: error: *** JOB 5433 ON hgx CANCELLED AT 2025-04-14T19:51:31 ***

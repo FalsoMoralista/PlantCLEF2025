@@ -1,0 +1,42 @@
+loaded params...
+{   'base_dir': '/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/',
+    'data': {   'class_mapping': 'pretrained_models/class_mapping.txt',
+                'species_mapping': 'pretrained_models/species_id_to_name.txt',
+                'test_data': '/home/rtcalumby/adam/luciano/PlantCLEF2025/test_dataset/'},
+    'k_means': {'K': 7806},
+    'patches': {'N': [16, 32, 64, 80, 128]},
+    'pretrained_path': 'pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar'}
+Test dataset created
+Traceback (most recent call last):
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/utils/data/dataloader.py", line 1133, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/multiprocessing/queues.py", line 113, in get
+    if not self._poll(timeout):
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/multiprocessing/connection.py", line 257, in poll
+    return self._poll(timeout)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/multiprocessing/connection.py", line 424, in _poll
+    r = wait([self], timeout)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/multiprocessing/connection.py", line 931, in wait
+    ready = selector.select(timeout)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/selectors.py", line 416, in select
+    fd_event_list = self._selector.poll(timeout)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/utils/data/_utils/signal_handling.py", line 66, in handler
+    _error_if_any_worker_fails()
+RuntimeError: DataLoader worker (pid 1036488) is killed by signal: Killed. 
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/main.py", line 29, in <module>
+    app_main(args=params)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/engine_baseline.py", line 61, in main
+    for im_id, (preprocessed_images, _, name) in enumerate(test_dataloader):
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/utils/data/dataloader.py", line 631, in __next__
+    data = self._next_data()
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/utils/data/dataloader.py", line 1329, in _next_data
+    idx, data = self._get_data()
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/utils/data/dataloader.py", line 1295, in _get_data
+    success, data = self._try_get_data()
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/utils/data/dataloader.py", line 1146, in _try_get_data
+    raise RuntimeError(f'DataLoader worker (pid(s) {pids_str}) exited unexpectedly') from e
+RuntimeError: DataLoader worker (pid(s) 1036488) exited unexpectedly
