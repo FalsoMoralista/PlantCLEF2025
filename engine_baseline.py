@@ -6,7 +6,7 @@ try:
     # --          THAT YOUR JOBS ARE LAUNCHED WITH ONLY 1 DEVICE VISIBLE
     # --          TO EACH PROCESS
     os.environ['CUDA_VISIBLE_DEVICES'] = os.environ['SLURM_LOCALID']
-    os.environ['TORCH_DISTRIBUTED_DEBUG'] = 'DETAIL'
+    #os.environ['TORCH_DISTRIBUTED_DEBUG'] = 'DETAIL'
 except Exception:
     pass
 
@@ -29,6 +29,12 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger()
 
 def main(args):
+
+    if not torch.cuda.is_available():
+        device = torch.device('cpu')
+    else:
+        device = torch.device('cuda:0')
+        torch.cuda.set_device(device)
     
     # -- Model
     pretrained_path = args['pretrained_path']
@@ -60,8 +66,10 @@ def main(args):
     cid_to_spid = load_class_mapping(class_mapping)
     spid_to_sp = load_species_mapping(species_mapping)
         
-    rank = 0
-    device = torch.device(f'cuda:{rank}')
+    #rank = 0
+    #device = torch.device(f'cuda:{rank}')
+    #torch.cuda.set_device(device)
+    print(torch.cuda.device)
 
     model = timm.create_model('vit_base_patch14_reg4_dinov2.lvd142m', pretrained=False, num_classes=len(cid_to_spid), checkpoint_path=pretrained_path)
     model.head = torch.nn.Identity() # Replace classification head by identity layer for feature extraction
@@ -92,67 +100,52 @@ def main(args):
             id = name[0].replace('.jpg','')   
             feature_bank[id] = []
 
-            def build_dist_patch_loader():
-                patches = preprocessed_images.squeeze(0)                            
-                patch_dataset = torch.utils.data.TensorDataset(patches)
-                patch_sampler = DistributedSampler(
-                    patch_dataset, 
-                    num_replicas=world_size,
-                    rank=rank,
-                    shuffle=False  
-                )            
-                patch_loader = DataLoader(
-                    patch_dataset,
-                    batch_size=batch_size,
-                    sampler=patch_sampler,
-                    shuffle=False,
-                    num_workers=0,
-                    pin_memory=True
-                )      
-                return patch_loader
-                              
-            patch_loader = build_dist_patch_loader()
+            patches = preprocessed_images.squeeze(0) # 8192                         
+            patch_dataset = torch.utils.data.TensorDataset(patches)
+            patch_sampler = DistributedSampler(
+                patch_dataset, 
+                num_replicas=world_size,
+                rank=rank,
+                shuffle=False  
+            )            
+            patch_loader = DataLoader(
+                patch_dataset,
+                batch_size=batch_size,
+                sampler=patch_sampler,
+                shuffle=False,
+                num_workers=0,
+                pin_memory=False
+            )                
+            
             for i, batch in enumerate(patch_loader):
                 x = batch[0].to(device, non_blocking=True)
                 with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=True):
                     with torch.inference_mode():
                         output = model(x).to(device=torch.device('cpu'))
                 feature_bank[id].append(output)
-            # -- Gathering 
-            if world_size > 1:
-                # Convert cache to list format for gathering
-                local_cache_list = [(key, torch.stack(value)) for key, value in feature_bank.items()]
 
-                # Gather cache lists from all processes
-                all_cache_lists = [None for _ in range(world_size)]
-                dist.all_gather_object(all_cache_lists, local_cache_list) 
+        # -- Gathering 
+        if world_size > 1:
+            # Convert cache to list format for gathering
+            local_cache_list = [(key, torch.stack(value)) for key, value in feature_bank.items()]
+            # Gather cache lists from all processes
+            all_cache_lists = [None for _ in range(world_size)]
+            dist.all_gather_object(all_cache_lists, local_cache_list) 
 
-                if rank == 0:
-                    aggregated_cache = {}
-                    for cache_list in all_cache_lists:
-                        for key, tensor_list in cache_list:
-                            if key not in aggregated_cache:
-                                aggregated_cache[key] = []
-                            aggregated_cache[key].append(tensor_list)  # Use append since tensor_list is already stacked
-
-                    # Convert aggregated_cache back to the dictionary format
-                    aggregated_cache = {key: torch.cat(tensor_list, dim=0) for key, tensor_list in aggregated_cache.items()}
-                else:
-                    aggregated_cache = None
-                # Create a list with one element (the dictionary) for broadcasting
-                object_list = [aggregated_cache]
-                dist.broadcast_object_list(object_list, src=0)
-
-                # Extract the dictionary from the list after broadcasting
-                aggregated_cache = object_list[0]
-                for key in aggregated_cache.keys():
-                    feature_bank[key].extend(aggregated_cache[key])
-                dist.barrier()
+            aggregated_cache = {}
+            if rank == 0:
+                for cache_list in all_cache_lists:
+                    for key, tensor_list in cache_list:
+                        aggregated_cache.setdefault(key, []).append(tensor_list)
+                aggregated_cache = {key: torch.cat(tensors, dim=0) for key, tensors in aggregated_cache.items()}                
+            dist.barrier()
+            feature_bank = aggregated_cache
         # -- 
         # Assert everything went fine
         if rank == 0:
             problem_size = (2048/n)*(1024/n) * len(test_dataset)
             cnt = [len(feature_bank[key]) for key in feature_bank.keys()]    
+            logger.info('Total features gathered %d, problem size: %d' % (cnt, problem_size))
             assert sum(cnt) == problem_size, 'Cache not compatible, corrupted or missing'
             energy = k_means.train(cached_features=feature_bank)
             print('K-Means free energy', energy, 'n:', n)

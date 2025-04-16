@@ -104,3 +104,108 @@ INFO:root:Image [4/2105]
 [rank0]:W0415 22:04:06.116609 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 981468597 hash value: 863252663663111195
 [rank2]:W0415 22:04:06.192444 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 981468597 hash value: 863252663663111195
 [rank3]:W0415 22:04:06.208924 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 981468597 hash value: 863252663663111195
+[rank0]:W0415 22:04:20.585526 140159054464832 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 3925869998 hash value: 17999570537562184572
+[rank1]:W0415 22:04:28.427735 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 3925869998 hash value: 17999570537562184572
+[rank2]:W0415 22:04:28.436505 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 3925869998 hash value: 17999570537562184572
+[rank3]:W0415 22:04:28.774404 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 3925869998 hash value: 17999570537562184572
+INFO:root:Image [5/2105]
+[rank0]:W0415 22:05:09.009287 140159054464832 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 4913628935 hash value: 15672946422579856827
+[rank1]:W0415 22:05:10.359304 140471467591488 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 4913628935 hash value: 1016861344290693611
+[rank3]:W0415 22:05:12.730679 140660293961536 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 4913628935 hash value: 11545142031785927895
+[rank2]:W0415 22:05:13.161343 140230246676288 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 4913628935 hash value: 9359457159079567852
+[rank1]:W0415 22:05:53.882941 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 4913628935 hash value: 2057867566690152811
+[rank3]:W0415 22:05:53.982420 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 4913628935 hash value: 2057867566690152811
+[rank0]:W0415 22:05:54.004973 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 4913628935 hash value: 2057867566690152811
+[rank2]:W0415 22:05:54.049246 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 4913628935 hash value: 2057867566690152811
+[rank1]:W0415 22:06:40.671057 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 4913628935 hash value: 2057867566690152811
+[rank0]:W0415 22:06:45.445327 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 4913628935 hash value: 2057867566690152811
+[rank2]:W0415 22:06:45.526409 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 4913628935 hash value: 2057867566690152811
+[rank3]:W0415 22:06:46.286453 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 4913628935 hash value: 2057867566690152811
+[rank1]:W0415 22:07:27.122300 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 4913628935 hash value: 2057867566690152811
+[rank0]:W0415 22:07:33.443087 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 4913628935 hash value: 2057867566690152811
+[rank2]:W0415 22:07:33.533586 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 4913628935 hash value: 2057867566690152811
+[rank3]:W0415 22:07:34.077632 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 4913628935 hash value: 2057867566690152811
+[rank1]:W0415 22:08:13.822672 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 4913628935 hash value: 2057867566690152811
+[rank0]:W0415 22:08:27.055248 140159054464832 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 4913628935 hash value: 2057867566690152811
+[rank2]:W0415 22:08:27.150453 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 4913628935 hash value: 2057867566690152811
+[rank3]:W0415 22:08:28.982683 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 4913628935 hash value: 2057867566690152811
+[rank0]:W0415 22:09:46.957968 140159054464832 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 19654510340 hash value: 15096525358462202365
+[rank1]:W0415 22:10:28.066079 140471467591488 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 19654510340 hash value: 15096525358462202365
+[rank2]:W0415 22:10:32.766220 140230246676288 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 19654510340 hash value: 15096525358462202365
+[rank3]:W0415 22:10:32.946749 140660293961536 torch/distributed/distributed_c10d.py:2359] _tensor_to_object size: 19654510340 hash value: 15096525358462202365
+INFO:root:Image [6/2105]
+[rank1]:W0415 22:14:04.304616 140471467591488 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 24574429279 hash value: 1168153270865298061
+[rank0]:W0415 22:14:52.851212 140159054464832 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 24574429279 hash value: 567844799171364892
+[rank3]:W0415 22:14:53.268480 140660293961536 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 24574429279 hash value: 1116632696467183418
+[rank2]:W0415 22:14:53.442851 140230246676288 torch/distributed/distributed_c10d.py:2349] _object_to_tensor size: 24574429279 hash value: 6694256882561768155
+Process Process-3:
+Traceback (most recent call last):
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/main.py", line 44, in process_main
+    app_main(args=params)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/engine_baseline.py", line 128, in main
+    dist.all_gather_object(all_cache_lists, local_cache_list)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/distributed/c10d_logger.py", line 75, in wrapper
+    return func(*args, **kwargs)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/distributed/distributed_c10d.py", line 2440, in all_gather_object
+    coalesced_output_tensor = torch.empty(
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 91.55 GiB. GPU 
+Process Process-1:
+Traceback (most recent call last):
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/main.py", line 44, in process_main
+    app_main(args=params)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/engine_baseline.py", line 128, in main
+    dist.all_gather_object(all_cache_lists, local_cache_list)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/distributed/c10d_logger.py", line 75, in wrapper
+    return func(*args, **kwargs)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/distributed/distributed_c10d.py", line 2440, in all_gather_object
+    coalesced_output_tensor = torch.empty(
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 91.55 GiB. GPU 
+Process Process-2:
+Traceback (most recent call last):
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/main.py", line 44, in process_main
+    app_main(args=params)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/engine_baseline.py", line 128, in main
+    dist.all_gather_object(all_cache_lists, local_cache_list)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/distributed/c10d_logger.py", line 75, in wrapper
+    return func(*args, **kwargs)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/distributed/distributed_c10d.py", line 2440, in all_gather_object
+    coalesced_output_tensor = torch.empty(
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 91.55 GiB. GPU 
+Process Process-4:
+Traceback (most recent call last):
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/main.py", line 44, in process_main
+    app_main(args=params)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/engine_baseline.py", line 128, in main
+    dist.all_gather_object(all_cache_lists, local_cache_list)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/distributed/c10d_logger.py", line 75, in wrapper
+    return func(*args, **kwargs)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/distributed/distributed_c10d.py", line 2440, in all_gather_object
+    coalesced_output_tensor = torch.empty(
+torch.cuda.OutOfMemoryError: CUDA out of memory. Tried to allocate 91.55 GiB. GPU 
+terminate called after throwing an instance of 'c10::DistNetworkError'
+  what():  Connection reset by peer
+Exception raised from recvBytes at /opt/conda/conda-bld/pytorch_1712608885084/work/torch/csrc/distributed/c10d/Utils.hpp:672 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x57 (0x7fed9c9f7897 in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libc10.so)
+frame #1: <unknown function> + 0x57c69fe (0x7fedf5d689fe in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libtorch_cpu.so)
+frame #2: c10d::TCPStore::check(std::vector<std::string, std::allocator<std::string> > const&) + 0x2d8 (0x7fedf5d64538 in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libtorch_cpu.so)
+frame #3: c10d::ProcessGroupNCCL::heartbeatMonitor() + 0x34d (0x7fed9dcc56fd in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libtorch_cuda.so)
+frame #4: <unknown function> + 0xd3b65 (0x7fedfe262b65 in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/../../../.././libstdc++.so.6)
+frame #5: <unknown function> + 0x8609 (0x7fee07113609 in /lib/x86_64-linux-gnu/libpthread.so.0)
+frame #6: clone + 0x43 (0x7fee06ede353 in /lib/x86_64-linux-gnu/libc.so.6)
+

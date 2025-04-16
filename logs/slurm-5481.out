@@ -1,0 +1,17 @@
+INFO:root:called-params config/configs.yaml
+INFO:root:loaded params...
+INFO:root:{'k_means': {'K': 7806}, 'patches': {'N': [16, 32, 64, 80, 128]}, 'num_workers': 32, 'base_dir': '/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/', 'pretrained_path': 'pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar', 'data': {'class_mapping': 'pretrained_models/class_mapping.txt', 'species_mapping': 'pretrained_models/species_id_to_name.txt', 'test_data': '/home/rtcalumby/adam/luciano/PlantCLEF2025/test_dataset/'}}
+INFO:root:Running... (rank: 0/4)
+INFO:root:Initialized (rank/world-size) 0/4
+<class 'torch.cuda.device'>
+Test dataset created
+<class 'torch.cuda.device'>
+INFO:timm.models._helpers:Loaded state_dict_ema from checkpoint 'pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar'
+<class 'torch.cuda.device'>
+Test dataset created
+<class 'torch.cuda.device'>
+Test dataset created
+Test dataset created
+INFO:root:Image [1/2105]
+INFO:root:Total gathered items 8:
+INFO:root:Finish
