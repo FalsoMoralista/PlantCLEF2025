@@ -6,7 +6,7 @@ try:
     # --          THAT YOUR JOBS ARE LAUNCHED WITH ONLY 1 DEVICE VISIBLE
     # --          TO EACH PROCESS
     os.environ['CUDA_VISIBLE_DEVICES'] = os.environ['SLURM_LOCALID']
-    #os.environ['TORCH_DISTRIBUTED_DEBUG'] = 'DETAIL'
+    os.environ['TORCH_DISTRIBUTED_DEBUG'] = 'DETAIL'
 except Exception:
     pass
 
