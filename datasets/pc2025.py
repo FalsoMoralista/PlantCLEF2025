@@ -34,8 +34,42 @@ def build_test_transform(data_config, n=None):
         GridCropAndResize(crop_size=n),
     ])
 
-
     return transform
+
+def build_train_transform(data_config):
+    transform = transforms.Compose([
+        transforms.Resize(518, interpolation=PIL.Image.BICUBIC),  # Optional: scale to be divisible by 16
+        transforms.CenterCrop(518),
+        transforms.ToTensor(),  # Convert to tensor: (C, H, W)
+        transforms.Normalize(mean=data_config['mean'], std=data_config['std']),
+    ])
+    return transform
+
+
+def build_train_dataset(image_folder, world_size, rank, data_config, batch_size=2048, num_workers=8):
+    
+    transform = build_train_transform(data_config)
+
+    dataset = CustomImageFolder(image_folder, transform=transform)
+    
+    print('Train dataset created')
+
+    dist_sampler = torch.utils.data.distributed.DistributedSampler(
+        dataset=dataset,
+        num_replicas=world_size,
+        rank=rank)
+    
+    data_loader = torch.utils.data.DataLoader(
+        dataset,
+        collate_fn=None,
+        sampler=dist_sampler,
+        batch_size=batch_size,
+        num_workers=num_workers,
+        drop_last=False,
+        pin_memory=True,
+        shuffle=False,
+        persistent_workers=False)    
+    return dataset, data_loader, dist_sampler
 
 def build_test_dataset(image_folder, data_config, batch_size=1, num_workers=16, n=None):
     
