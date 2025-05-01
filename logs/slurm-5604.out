@@ -1,0 +1,22 @@
+INFO:root:called-params config/feature_extraction.yaml
+INFO:root:loaded params...
+INFO:root:{'num_workers': 64, 'base_dir': '/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/', 'pretrained_path': 'pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar', 'data': {'class_mapping': 'pretrained_models/class_mapping.txt', 'species_mapping': 'pretrained_models/species_id_to_name.txt', 'train_data': '/home/rtcalumby/adam/luciano/PlantCLEF2025/images_max_side_800/', 'output_dir': '/home/rtcalumby/adam/luciano/PlantCLEF2025/cached_features/'}}
+INFO:root:Running... (rank: 0/8)
+INFO:root:Initialized (rank/world-size) 0/8
+INFO:timm.models._helpers:Loaded state_dict_ema from checkpoint 'pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar'
+Train dataset created for rank 0,/8
+Data Loader length: 86 process_id: 0
+Train dataset created for rank 1,/8
+Data Loader length: 86 process_id: 1
+Train dataset created for rank 3,/8
+Data Loader length: 86 process_id: 3
+Train dataset created for rank 6,/8
+Data Loader length: 86 process_id: 6
+Train dataset created for rank 4,/8
+Data Loader length: 86 process_id: 4
+Train dataset created for rank 7,/8
+Data Loader length: 86 process_id: 7
+Train dataset created for rank 5,/8
+Data Loader length: 86 process_id: 5
+Train dataset created for rank 2,/8
+Data Loader length: 86 process_id: 2

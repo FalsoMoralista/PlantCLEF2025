@@ -1,0 +1,8 @@
+Device found
+Total features gathered 1408034, problem size: 1408034
+Traceback (most recent call last):
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/generate_proxy_training_labels.py", line 49, in <module>
+    main(None)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/generate_proxy_training_labels.py", line 43, in main
+    config.device = device
+TypeError: in method 'GpuIndexConfig_device_set', argument 2 of type 'int'

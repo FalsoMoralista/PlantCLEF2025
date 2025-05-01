@@ -33,7 +33,7 @@ def main(args):
     if not torch.cuda.is_available():
         device = torch.device('cpu')
     else:
-        device = torch.device('cuda:0')
+        device = torch.device('cuda:0') # this is overwritten by the init_distributed() function (which assigns the corresponding rank for each process)
         torch.cuda.set_device(device)
     
     # -- Model
@@ -57,19 +57,14 @@ def main(args):
     except Exception:
         pass
 
-    # -- init torch distributed backend
-    world_size, rank = init_distributed()
+    # -- init torch distributed backend (overwrites manual replacement of ranks)
+    world_size, rank = init_distributed() 
     logger.info(f'Initialized (rank/world-size) {rank}/{world_size}')
     if rank > 0:
         logger.setLevel(logging.ERROR)    
 
     cid_to_spid = load_class_mapping(class_mapping)
     spid_to_sp = load_species_mapping(species_mapping)
-        
-    #rank = 0
-    #device = torch.device(f'cuda:{rank}')
-    #torch.cuda.set_device(device)
-    print(torch.cuda.device)
 
     model = timm.create_model('vit_base_patch14_reg4_dinov2.lvd142m', pretrained=False, num_classes=len(cid_to_spid), checkpoint_path=pretrained_path)
     model.head = torch.nn.Identity() # Replace classification head by identity layer for feature extraction

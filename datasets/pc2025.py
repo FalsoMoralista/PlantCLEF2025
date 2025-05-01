@@ -52,7 +52,7 @@ def build_train_dataset(image_folder, world_size, rank, data_config, batch_size=
 
     dataset = CustomImageFolder(image_folder, transform=transform)
     
-    print('Train dataset created')
+    print(f'Train dataset created for rank {rank},/{world_size}')
 
     dist_sampler = torch.utils.data.distributed.DistributedSampler(
         dataset=dataset,
@@ -68,7 +68,8 @@ def build_train_dataset(image_folder, world_size, rank, data_config, batch_size=
         drop_last=False,
         pin_memory=True,
         shuffle=False,
-        persistent_workers=False)    
+        persistent_workers=False) 
+    print('Data Loader length:', len(data_loader), f'process_id: {rank}')   
     return dataset, data_loader, dist_sampler
 
 def build_test_dataset(image_folder, data_config, batch_size=1, num_workers=16, n=None):

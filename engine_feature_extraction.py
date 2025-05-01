@@ -23,6 +23,7 @@ import sys
 import multiprocessing as mp
 from util.distributed import init_distributed
 import torch.distributed as dist
+import time
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger()
@@ -32,8 +33,8 @@ def main(args):
     if not torch.cuda.is_available():
         device = torch.device('cpu')
     else:
-        device = torch.device('cuda:0')
-        torch.cuda.set_device(device)
+        device = torch.device('cuda:0') # this is overwritten by the init_distributed() function (which assigns the corresponding rank for each process)
+        torch.cuda.set_device(device)       
     
     # -- Model
     pretrained_path = args['pretrained_path']
@@ -51,7 +52,7 @@ def main(args):
         pass
 
     # -- init torch distributed backend
-    world_size, rank = init_distributed()
+    world_size, rank = init_distributed() # assigns the corresponding rank and device for each process
     logger.info(f'Initialized (rank/world-size) {rank}/{world_size}')
     if rank > 0:
         logger.setLevel(logging.ERROR)    
@@ -73,15 +74,16 @@ def main(args):
                                                 world_size=world_size,
                                                 rank=rank,
                                                 batch_size=batch_size)
+    
+    size = int(len(train_dataset)/(batch_size * world_size))
     items = []
     for im_id, (batch_data, labels, img_name) in enumerate(train_dataloader):
-        logger.info(f'Iteration [{im_id+1}/{len(train_dataset)/(batch_size * world_size)}]')
+        logger.info(f'Iteration [{im_id+1}/{size}]')
         x = batch_data.to(device, non_blocking=True)
         with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=True):
             with torch.inference_mode():
                 output = model(x).to(device=torch.device('cpu'))
-        if (im_id + 1) % 2 == 0:
-            torch.cuda.empty_cache()
+        torch.cuda.empty_cache()
         items.append((output, labels))
     # -- End 
     def build_cache():
@@ -95,11 +97,13 @@ def main(args):
         return feature_bank    
     feature_bank = build_cache()
     torch.save(feature_bank, cache_dir + f'feature_bank_rank{rank}.pt')  
-    dist.barrier()
+    #dist.barrier()
+    time.sleep(3*60)
     print('Rank,', rank, 'Cache keys', len(feature_bank.keys()))
     # -- 
     # Assert everything went fine
     if rank == 0:
+        print('Assertion')
         dataset_length = 1408033
         cache_list = [torch.load(cache_dir + f'feature_bank_rank{r}.pt') for r in range(world_size)]
         total = 0

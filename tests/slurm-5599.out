@@ -1,0 +1,5 @@
+Total features gathered 886169, problem size: 1408033
+Traceback (most recent call last):
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/tests/checksum.py", line 12, in <module>
+    assert total == dataset_length, 'Cache not compatible, corrupted or missing'
+AssertionError: Cache not compatible, corrupted or missing

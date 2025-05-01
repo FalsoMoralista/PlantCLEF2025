@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/tests/checksum.py", line 6, in <module>
+    cache_list = [torch.load(cache_dir + f'feature_bank_rank{r}.pt') for r in range(world_size)]
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/tests/checksum.py", line 6, in <listcomp>
+    cache_list = [torch.load(cache_dir + f'feature_bank_rank{r}.pt') for r in range(world_size)]
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/serialization.py", line 997, in load
+    with _open_file_like(f, 'rb') as opened_file:
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/serialization.py", line 444, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/serialization.py", line 425, in __init__
+    super().__init__(open(name, mode))
+FileNotFoundError: [Errno 2] No such file or directory: '/home/rtcalumby/adam/luciano/PlantCLEF2025/cached_features/feature_bank_rank2.pt'

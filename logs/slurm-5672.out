@@ -1,0 +1,15 @@
+Device found
+Total features gathered 1408034, problem size: 1408034
+Training K-means with torch.Size([1408034, 768])
+Traceback (most recent call last):
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/generate_proxy_training_labels.py", line 49, in <module>
+    main(None)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/generate_proxy_training_labels.py", line 46, in main
+    energy = k_means.train(cached_features=feature_bank)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/src/k_means.py", line 78, in train
+    self.kmeans.train(x)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/faiss/extra_wrappers.py", line 544, in train
+    x = np.ascontiguousarray(x, dtype='float32')
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/_tensor.py", line 1089, in __array__
+    return self.numpy().astype(dtype, copy=False)
+TypeError: can't convert cuda:0 device type tensor to numpy. Use Tensor.cpu() to copy the tensor to host memory first.
