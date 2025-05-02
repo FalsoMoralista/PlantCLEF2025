@@ -256,7 +256,7 @@ class VisionTransformer(nn.Module):
         self.nb_classes = nb_classes
         
 
-        self.patch_embed = pretrained_patch_embedder.eval()
+        self.patch_embed = pretrained_patch_embedder
 
         num_patches = (img_size[0] // patch_size) * (img_size[1] // patch_size)
         self.linear = nn.Linear(num_patches, nb_classes)
@@ -312,7 +312,7 @@ class VisionTransformer(nn.Module):
         with torch.inference_mode():
             embedded_x = self.patch_embed(x).unsqueeze(0) # Create a batch dim
         del x # x previously stored a (2048, 3, 518, 518) tensor
-        torch.cuda.empty_cache() # TODO: test removing
+        torch.cuda.empty_cache()
         x = embedded_x
         #print('Embedded (size)', x.size())
         #print('Allocated Memory after embedding:', (torch.cuda.memory_allocated() / 1024.**3), ' GB')

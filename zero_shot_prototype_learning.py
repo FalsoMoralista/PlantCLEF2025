@@ -37,7 +37,7 @@ import numpy as np
 # --
 log_timings = True
 log_freq = 10
-checkpoint_freq = 25
+checkpoint_freq = 5
 # --
 
 _GLOBAL_SEED = 0
@@ -80,6 +80,10 @@ def main(args):
     lr = args['optimization']['lr']
     final_lr = args['optimization']['final_lr']
     experiment_code = args['experiment_code']
+    
+    # -- 
+    accum_iter = args['gradient_accumulation'] # Gradient accumulation
+    batch_size = args['batch_size']
 
     try:
         mp.set_start_method('spawn')
@@ -90,6 +94,7 @@ def main(args):
     world_size, rank = init_distributed() 
     logger.info(f'Initialized (rank/world-size) {rank}/{world_size}')
     if rank > 0:
+        print('Rank', rank)
         logger.setLevel(logging.ERROR)    
 
     # -- make csv_logger
@@ -113,7 +118,7 @@ def main(args):
     test_dir = '/home/rtcalumby/adam/luciano/PlantCLEF2025/test_dataset/'
 
     patch_size = N
-    batch_size = 1
+    log_freq = accum_iter
 
     model = timm.create_model('vit_base_patch14_reg4_dinov2.lvd142m', pretrained=False, num_classes=len(cid_to_spid), checkpoint_path=pretrained_path)
     model.head = torch.nn.Identity() # Replace classification head by identity layer for feature extraction
@@ -122,7 +127,7 @@ def main(args):
 
     test_dataset, test_dataloader, dist_sampler = build_test_dataset(image_folder=test_dir,
                                                 data_config=data_config,
-                                                num_workers=4,
+                                                num_workers=8,
                                                 n=patch_size,
                                                 world_size=world_size,
                                                 rank=rank,
@@ -131,7 +136,7 @@ def main(args):
     use_bfloat16 = True
     ipe = len(test_dataloader)
     print('Test dataset, length:', ipe * batch_size)
-    ViT = VisionTransformer(img_size=[2048,1024], pretrained_patch_embedder=model, patch_size=patch_size, embed_dim=768, depth=6)
+    ViT = VisionTransformer(img_size=[2048,2048], pretrained_patch_embedder=model, patch_size=patch_size, embed_dim=768, depth=6)
     logger.info('Loading Vision Transformer: %s' %(ViT))
     ViT.to(device)
     # Create optimizer and config model
@@ -171,8 +176,7 @@ def main(args):
             if (epoch + 1) % checkpoint_freq == 0:
                 torch.save(save_dict, save_path.format(epoch=f'{epoch + 1}'))
 
-    accum_iter = 32 # Gradient accumulation
-
+    
     # -- TRAINING LOOP
     start_epoch = 0
     for epoch in range(start_epoch, num_epochs):
@@ -183,11 +187,9 @@ def main(args):
         loss_meter = AverageMeter()
         time_meter = AverageMeter()
 
-
         for itr, (preprocessed_images, _, name) in enumerate(test_dataloader):
             
             def train_step():
-                
                 _new_lr = optimizer.param_groups[0]['lr']
                 _new_wd = optimizer.param_groups[0]['weight_decay']
                 grad_stats = None
@@ -208,8 +210,7 @@ def main(args):
                     output = ViT(x.squeeze(0)).squeeze(0)
                     #print('output:', output.size())
                     loss = criterion(output.T, y)
-                    torch.cuda.empty_cache()
-                    
+
                 loss_meter.update(loss)
                 
                 #  Step 2. Backward & step with mixed precision
@@ -225,8 +226,7 @@ def main(args):
                 if (itr + 1) % accum_iter == 0:
                     grad_stats = grad_logger(ViT_noddp.named_parameters())
                     optimizer.zero_grad()
-                    print('Zeroing grads')
-                    print('Loss so far and breaking', loss)
+                    
 
                 return (float(loss), _new_lr , _new_wd, grad_stats)
 
@@ -241,7 +241,7 @@ def main(args):
                 if (itr % log_freq == 0) or np.isnan(loss) or np.isinf(loss):
                     logger.info('[%d, %5d/%5d] - train_loss: %.4f -'
                                 '[wd: %.2e] [lr: %.2e]'
-                                '[mem: %.2e] '
+                                '[max mem allocated: %.2e] '
                                 '(%.1f ms)'
 
                                 % (epoch + 1, itr, ipe,
@@ -261,8 +261,7 @@ def main(args):
             log_stats()                       
         # -- end of epoch
         save_checkpoint(epoch+1)
-        logger.info('Loss %.4f' % loss)
-        break        
+        logger.info('Loss %.4f' % loss)        
 
 
     #img = None

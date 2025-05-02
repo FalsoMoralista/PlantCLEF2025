@@ -3,7 +3,7 @@ experiment_code: 0
 k_means:
   K: 7806
 patches:
-  N: 32
+  N: 64
 num_workers: 16
 base_dir: /home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/
 pretrained_path: pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar
@@ -11,6 +11,9 @@ data:
   class_mapping: pretrained_models/class_mapping.txt
   species_mapping: pretrained_models/species_id_to_name.txt
   test_data: /home/rtcalumby/adam/luciano/PlantCLEF2025/test_dataset/
+
+batch_size: 1
+gradient_accumulation: 128
 
 optimization:
   epochs: 150
