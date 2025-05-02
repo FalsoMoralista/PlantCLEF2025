@@ -1,3 +1,3 @@
 #!/bin/sh
 
-python checksum.py
+python test_vision_transformer.py

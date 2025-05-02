@@ -46,6 +46,9 @@ def main(args):
     energy = k_means.train(cached_features=feature_bank)
     print('K-Means free energy', energy)
     print('Kmeans centroids', k_means.centroids.size())
-    torch.save('proxy/prototypes.pt')  
+    torch.save(k_means.centroids, 'proxy/prototypes.pt')
+    test = torch.load('proxy/prototypes.pt')
+    print('Centroids:', test.size())
+
 
 main(None)

@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/main_zero_shot_learning.py", line 4, in <module>
+    from zero_shot_prototype_learning import main as app_main
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/zero_shot_prototype_learning.py", line 229
+    (loss, _new_lr if _new_lr is not None else start_lr, _new_wd if _new_wd is not None else wd, grad_stats), etime = gpu_timer(train_step)
+           ^
+SyntaxError: cannot assign to conditional expression

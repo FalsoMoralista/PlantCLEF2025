@@ -72,29 +72,28 @@ def build_train_dataset(image_folder, world_size, rank, data_config, batch_size=
     print('Data Loader length:', len(data_loader), f'process_id: {rank}')   
     return dataset, data_loader, dist_sampler
 
-def build_test_dataset(image_folder, data_config, batch_size=1, num_workers=16, n=None):
+def build_test_dataset(image_folder, data_config, batch_size=1, num_workers=16, n=None, world_size=0, rank=None, shuffle=False):
     
     transform = build_test_transform(data_config, n=n)
 
     dataset = CustomImageFolder(image_folder, transform=transform)
     
     print('Test dataset created')
-
-    #dist_sampler = torch.utils.data.distributed.DistributedSampler(
-    #    dataset=dataset,
-    #    num_replicas=1,
-    #    rank=0)
+    if world_size > 1:
+        dist_sampler = torch.utils.data.distributed.DistributedSampler(
+            dataset=dataset,
+            num_replicas=world_size,
+            shuffle=shuffle,
+            rank=rank)
     
     data_loader = torch.utils.data.DataLoader(
         dataset,
         collate_fn=None,
-        #sampler=dist_sampler,
+        sampler=dist_sampler if world_size > 1 else None,
         batch_size=batch_size,
         drop_last=False,
         pin_memory=False,
         num_workers=num_workers,
-        prefetch_factor=1,
-        shuffle=False,
-        persistent_workers=False)    
-    return dataset, data_loader
+        prefetch_factor=1)    
+    return dataset, data_loader, dist_sampler if world_size > 1 else None
 

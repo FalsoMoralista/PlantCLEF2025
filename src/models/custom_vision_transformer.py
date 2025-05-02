@@ -245,15 +245,21 @@ class VisionTransformer(nn.Module):
         drop_path_rate=0.0,
         norm_layer=nn.LayerNorm,
         init_std=0.02,
+        nb_classes=7806,
         **kwargs
     ):
         super().__init__()
         self.num_features = self.embed_dim = embed_dim
         self.num_heads = num_heads
         # --
+
+        self.nb_classes = nb_classes
         
+
         self.patch_embed = pretrained_patch_embedder.eval()
+
         num_patches = (img_size[0] // patch_size) * (img_size[1] // patch_size)
+        self.linear = nn.Linear(num_patches, nb_classes)
         # --
         self.pos_embed = nn.Parameter(torch.zeros(1, num_patches, embed_dim), requires_grad=False)
         pos_embed = get_2d_sincos_pos_embed(self.pos_embed.shape[-1],
@@ -300,24 +306,16 @@ class VisionTransformer(nn.Module):
             if not isinstance(masks, list):
                 masks = [masks]
         
-        B, P, C, H, W = x.size() 
-        print('Allocated Memory for images:', (torch.cuda.memory_allocated() / 1024.**3), ' GB')
-        
-        # -- patchify x (patch_embed is a DINO model)
+        #B, P, C, H, W = x.size() 
+        #print('Allocated Memory for images:', (torch.cuda.memory_allocated() / 1024.**3), ' GB')
+        #print(x.size())
         with torch.inference_mode():
-            if B > 1:
-                embedded_x = []
-                for batch_item in x:
-                    embedded_x.append(self.patch_embed(batch_item))
-                    print('Allocated Memory while embedding:', (torch.cuda.memory_allocated() / 1024.**3), ' GB')
-                embedded_x = torch.stack(embedded_x)
-            else:    
-                embedded_x = self.patch_embed(x).unsqueeze(0) # Create a batch dim
-        
+            embedded_x = self.patch_embed(x).unsqueeze(0) # Create a batch dim
         del x # x previously stored a (2048, 3, 518, 518) tensor
+        torch.cuda.empty_cache() # TODO: test removing
         x = embedded_x
-        print('Embedded (size)', x.size())
-        print('Allocated Memory after embedding:', (torch.cuda.memory_allocated() / 1024.**3), ' GB')
+        #print('Embedded (size)', x.size())
+        #print('Allocated Memory after embedding:', (torch.cuda.memory_allocated() / 1024.**3), ' GB')
 
         # In the original ViT setting x has shape: B, N, D
 
@@ -349,9 +347,9 @@ class VisionTransformer(nn.Module):
         if self.norm is not None:
             x = self.norm(x)
         
-        print('Allocated Memory after forwarding:', (torch.cuda.memory_allocated() / 1024.**3), ' GB')
-        print('Size after forwarding:', x.size())
-
+        #print('Allocated Memory after forwarding:', (torch.cuda.memory_allocated() / 1024.**3), ' GB')
+        #print('Size after forwarding:', x.size())
+        x = self.linear(x.transpose(1,2))
         return x
 
     def interpolate_pos_encoding(self, x, pos_embed):
