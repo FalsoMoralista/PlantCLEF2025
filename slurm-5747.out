@@ -341,3 +341,164 @@ Test dataset, length: 1053
 Allocated Memory with model loading: 1.0259356498718262  GB
 INFO:root:[1,     0/ 1053] - train_loss: 0.6439 -[wd: 1.00e-02] [lr: 1.00e-03][max mem allocated: 3.74e+04] (5393.4 ms)
 INFO:root:[1,   128/ 1053] - train_loss: 0.6433 -[wd: 4.00e-02] [lr: 1.01e-05][max mem allocated: 3.78e+04] (3229.7 ms)
+INFO:root:[1,   256/ 1053] - train_loss: 0.6397 -[wd: 4.00e-02] [lr: 1.01e-05][max mem allocated: 3.80e+04] (3221.0 ms)
+INFO:root:[1,   384/ 1053] - train_loss: 0.6362 -[wd: 4.00e-02] [lr: 1.02e-05][max mem allocated: 3.80e+04] (3221.0 ms)
+INFO:root:[1,   512/ 1053] - train_loss: 0.6326 -[wd: 4.00e-02] [lr: 1.03e-05][max mem allocated: 3.80e+04] (3220.9 ms)
+INFO:root:[1,   640/ 1053] - train_loss: 0.6290 -[wd: 4.00e-02] [lr: 1.03e-05][max mem allocated: 3.80e+04] (3221.2 ms)
+INFO:root:[1,   768/ 1053] - train_loss: 0.6253 -[wd: 4.00e-02] [lr: 1.04e-05][max mem allocated: 3.80e+04] (3221.4 ms)
+INFO:root:[1,   896/ 1053] - train_loss: 0.6215 -[wd: 4.00e-02] [lr: 1.04e-05][max mem allocated: 3.80e+04] (3221.0 ms)
+INFO:root:[1,  1024/ 1053] - train_loss: 0.6175 -[wd: 4.00e-02] [lr: 1.05e-05][max mem allocated: 3.80e+04] (3220.4 ms)
+INFO:root:Loss 0.5837
+INFO:root:Epoch 2
+INFO:root:[2,     0/ 1053] - train_loss: 0.5796 -[wd: 4.00e-02] [lr: 1.05e-05][max mem allocated: 3.80e+04] (3039.4 ms)
+INFO:root:[2,   128/ 1053] - train_loss: 0.5816 -[wd: 4.00e-02] [lr: 1.06e-05][max mem allocated: 3.80e+04] (3222.6 ms)
+INFO:root:[2,   256/ 1053] - train_loss: 0.5773 -[wd: 4.00e-02] [lr: 1.06e-05][max mem allocated: 3.80e+04] (3221.9 ms)
+INFO:root:[2,   384/ 1053] - train_loss: 0.5729 -[wd: 4.00e-02] [lr: 1.07e-05][max mem allocated: 3.80e+04] (3221.5 ms)
+INFO:root:[2,   512/ 1053] - train_loss: 0.5684 -[wd: 4.00e-02] [lr: 1.08e-05][max mem allocated: 3.80e+04] (3222.3 ms)
+INFO:root:[2,   640/ 1053] - train_loss: 0.5639 -[wd: 4.00e-02] [lr: 1.08e-05][max mem allocated: 3.80e+04] (3221.9 ms)
+INFO:root:[2,   768/ 1053] - train_loss: 0.5594 -[wd: 4.00e-02] [lr: 1.09e-05][max mem allocated: 3.80e+04] (3221.9 ms)
+INFO:root:[2,   896/ 1053] - train_loss: 0.5549 -[wd: 4.00e-02] [lr: 1.09e-05][max mem allocated: 3.80e+04] (3222.2 ms)
+INFO:root:[2,  1024/ 1053] - train_loss: 0.5504 -[wd: 4.00e-02] [lr: 1.10e-05][max mem allocated: 3.80e+04] (3222.5 ms)
+INFO:root:Loss 0.5125
+INFO:root:Epoch 3
+INFO:root:[3,     0/ 1053] - train_loss: 0.5105 -[wd: 4.00e-02] [lr: 1.10e-05][max mem allocated: 3.80e+04] (3077.5 ms)
+INFO:root:[3,   128/ 1053] - train_loss: 0.5097 -[wd: 4.00e-02] [lr: 1.11e-05][max mem allocated: 3.80e+04] (3219.0 ms)
+INFO:root:[3,   256/ 1053] - train_loss: 0.5054 -[wd: 4.00e-02] [lr: 1.11e-05][max mem allocated: 3.80e+04] (3218.8 ms)
+INFO:root:[3,   384/ 1053] - train_loss: 0.5010 -[wd: 4.00e-02] [lr: 1.12e-05][max mem allocated: 3.80e+04] (3219.0 ms)
+INFO:root:[3,   512/ 1053] - train_loss: 0.4966 -[wd: 4.00e-02] [lr: 1.13e-05][max mem allocated: 3.80e+04] (3218.3 ms)
+INFO:root:[3,   640/ 1053] - train_loss: 0.4923 -[wd: 4.00e-02] [lr: 1.13e-05][max mem allocated: 3.80e+04] (3218.3 ms)
+INFO:root:[3,   768/ 1053] - train_loss: 0.4882 -[wd: 4.00e-02] [lr: 1.14e-05][max mem allocated: 3.80e+04] (3218.1 ms)
+INFO:root:[3,   896/ 1053] - train_loss: 0.4840 -[wd: 4.00e-02] [lr: 1.14e-05][max mem allocated: 3.80e+04] (3218.1 ms)
+INFO:root:[3,  1024/ 1053] - train_loss: 0.4799 -[wd: 4.00e-02] [lr: 1.15e-05][max mem allocated: 3.80e+04] (3219.0 ms)
+INFO:root:Loss 0.4432
+INFO:root:Epoch 4
+INFO:root:[4,     0/ 1053] - train_loss: 0.4444 -[wd: 4.00e-02] [lr: 1.15e-05][max mem allocated: 3.80e+04] (3052.1 ms)
+INFO:root:[4,   128/ 1053] - train_loss: 0.4437 -[wd: 4.00e-02] [lr: 1.16e-05][max mem allocated: 3.80e+04] (3214.4 ms)
+INFO:root:[4,   256/ 1053] - train_loss: 0.4400 -[wd: 4.00e-02] [lr: 1.16e-05][max mem allocated: 3.80e+04] (3216.6 ms)
+INFO:root:[4,   384/ 1053] - train_loss: 0.4363 -[wd: 4.00e-02] [lr: 1.17e-05][max mem allocated: 3.80e+04] (3216.7 ms)
+INFO:root:[4,   512/ 1053] - train_loss: 0.4328 -[wd: 4.00e-02] [lr: 1.18e-05][max mem allocated: 3.80e+04] (3217.4 ms)
+INFO:root:[4,   640/ 1053] - train_loss: 0.4293 -[wd: 4.00e-02] [lr: 1.18e-05][max mem allocated: 3.80e+04] (3217.2 ms)
+INFO:root:[4,   768/ 1053] - train_loss: 0.4258 -[wd: 4.00e-02] [lr: 1.19e-05][max mem allocated: 3.80e+04] (3217.1 ms)
+INFO:root:[4,   896/ 1053] - train_loss: 0.4224 -[wd: 4.00e-02] [lr: 1.19e-05][max mem allocated: 3.80e+04] (3217.3 ms)
+INFO:root:[4,  1024/ 1053] - train_loss: 0.4191 -[wd: 4.00e-02] [lr: 1.20e-05][max mem allocated: 3.80e+04] (3217.2 ms)
+INFO:root:Loss 0.3900
+INFO:root:Epoch 5
+INFO:root:[5,     0/ 1053] - train_loss: 0.3894 -[wd: 4.00e-02] [lr: 1.20e-05][max mem allocated: 3.80e+04] (2935.4 ms)
+INFO:root:[5,   128/ 1053] - train_loss: 0.3899 -[wd: 4.00e-02] [lr: 1.21e-05][max mem allocated: 3.80e+04] (3215.7 ms)
+terminate called without an active exception
+Process Process-2:
+Traceback (most recent call last):
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/main_zero_shot_learning.py", line 44, in process_main
+    app_main(args=params)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/zero_shot_prototype_learning.py", line 234, in main
+    (loss, _new_lr, _new_wd, grad_stats), etime = gpu_timer(train_step)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/src/utils/logging.py", line 21, in gpu_timer
+    result = closure()
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/zero_shot_prototype_learning.py", line 210, in train_step
+    output = ViT(x.squeeze(0)).squeeze(0)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/nn/parallel/distributed.py", line 1593, in forward
+    else self._run_ddp_forward(*inputs, **kwargs)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/nn/parallel/distributed.py", line 1411, in _run_ddp_forward
+    return self.module(*inputs, **kwargs)  # type: ignore[index]
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/src/models/custom_vision_transformer.py", line 315, in forward
+    torch.cuda.empty_cache()
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/cuda/memory.py", line 162, in empty_cache
+    torch._C._cuda_emptyCache()
+RuntimeError: CUDA error: uncorrectable ECC error encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1.
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+[rank1]:[W CUDAGuardImpl.h:118] Warning: CUDA warning: uncorrectable ECC error encountered (function destroyEvent)
+terminate called after throwing an instance of 'c10::Error'
+  what():  CUDA error: uncorrectable ECC error encountered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1.
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+Exception raised from c10_cuda_check_implementation at /opt/conda/conda-bld/pytorch_1712608885084/work/c10/cuda/CUDAException.cpp:43 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x57 (0x7f41c188d897 in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libc10.so)
+frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f41c183db25 in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libc10.so)
+frame #2: c10::cuda::c10_cuda_check_implementation(int, char const*, char const*, int, bool) + 0x118 (0x7f41c19676f8 in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libc10_cuda.so)
+frame #3: <unknown function> + 0x1d8b6 (0x7f41c19328b6 in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libc10_cuda.so)
+frame #4: <unknown function> + 0x1f5c3 (0x7f41c19345c3 in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libc10_cuda.so)
+frame #5: <unknown function> + 0x1f902 (0x7f41c1934902 in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libc10_cuda.so)
+frame #6: <unknown function> + 0x5a58a0 (0x7f42223b28a0 in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libtorch_python.so)
+frame #7: <unknown function> + 0x6a36f (0x7f41c187236f in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libc10.so)
+frame #8: c10::TensorImpl::~TensorImpl() + 0x21b (0x7f41c186b1cb in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libc10.so)
+frame #9: c10::TensorImpl::~TensorImpl() + 0x9 (0x7f41c186b379 in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libc10.so)
+frame #10: c10d::Reducer::~Reducer() + 0x5c4 (0x7f421ac243b4 in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libtorch_cpu.so)
+frame #11: std::_Sp_counted_ptr<c10d::Reducer*, (__gnu_cxx::_Lock_policy)2>::_M_dispose() + 0x12 (0x7f4222af6e32 in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libtorch_python.so)
+frame #12: std::_Sp_counted_base<(__gnu_cxx::_Lock_policy)2>::_M_release() + 0x48 (0x7f422227da78 in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libtorch_python.so)
+frame #13: <unknown function> + 0xced8e1 (0x7f4222afa8e1 in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libtorch_python.so)
+frame #14: <unknown function> + 0x47ba13 (0x7f4222288a13 in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libtorch_python.so)
+frame #15: <unknown function> + 0x47c991 (0x7f4222289991 in /home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/lib/libtorch_python.so)
+frame #16: <unknown function> + 0x12c9c6 (0x557ba1ae09c6 in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #17: <unknown function> + 0x15183a (0x557ba1b0583a in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #18: <unknown function> + 0x15a1b8 (0x557ba1b0e1b8 in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #19: <unknown function> + 0x138397 (0x557ba1aec397 in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #20: <unknown function> + 0x14ae3b (0x557ba1afee3b in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #21: <unknown function> + 0x14ae7f (0x557ba1afee7f in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #22: <unknown function> + 0x14ae7f (0x557ba1afee7f in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #23: <unknown function> + 0x14ae7f (0x557ba1afee7f in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #24: _PyEval_EvalFrameDefault + 0x258e (0x557ba1ae64be in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #25: <unknown function> + 0x12f094 (0x557ba1ae3094 in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #26: _PyFunction_Vectorcall + 0xd9 (0x557ba1af4519 in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #27: _PyEval_EvalFrameDefault + 0x696 (0x557ba1ae45c6 in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #28: <unknown function> + 0x1407c2 (0x557ba1af47c2 in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #29: _PyEval_EvalFrameDefault + 0x3e2 (0x557ba1ae4312 in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #30: <unknown function> + 0x12f094 (0x557ba1ae3094 in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #31: _PyFunction_Vectorcall + 0xd9 (0x557ba1af4519 in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #32: _PyEval_EvalFrameDefault + 0x11f8 (0x557ba1ae5128 in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #33: <unknown function> + 0x12f094 (0x557ba1ae3094 in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #34: _PyEval_EvalCodeWithName + 0x48 (0x557ba1ae2d68 in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #35: PyEval_EvalCodeEx + 0x39 (0x557ba1ae2d19 in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #36: PyEval_EvalCode + 0x1b (0x557ba1b9007b in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #37: <unknown function> + 0x208fca (0x557ba1bbcfca in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #38: <unknown function> + 0x205353 (0x557ba1bb9353 in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #39: PyRun_StringFlags + 0x9a (0x557ba1bb116a in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #40: PyRun_SimpleStringFlags + 0x3c (0x557ba1bb105c in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #41: Py_RunMain + 0x267 (0x557ba1bb0297 in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #42: Py_BytesMain + 0x37 (0x557ba1b83f07 in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+frame #43: __libc_start_main + 0xf3 (0x7f422bc79083 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #44: <unknown function> + 0x1cfe01 (0x557ba1b83e01 in /home/rtcalumby/miniconda3/envs/fgdcc/bin/python)
+
+[rank0]:[E ProcessGroupGloo.cpp:3010] [Rank 0]: Rank 1 failed to pass monitoredBarrier in 600000 ms
+[rank0]:[E ProcessGroupGloo.cpp:144] [Rank 0]: Ranks 1 failed to pass monitoredBarrier in 600000 ms
+Process Process-1:
+Traceback (most recent call last):
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/main_zero_shot_learning.py", line 44, in process_main
+    app_main(args=params)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/zero_shot_prototype_learning.py", line 234, in main
+    (loss, _new_lr, _new_wd, grad_stats), etime = gpu_timer(train_step)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/src/utils/logging.py", line 21, in gpu_timer
+    result = closure()
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/zero_shot_prototype_learning.py", line 212, in train_step
+    loss = criterion(output.T, y)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/zero_shot_prototype_learning.py", line 206, in criterion
+    loss = AllReduce.apply(loss)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/autograd/function.py", line 598, in apply
+    return super().apply(*args, **kwargs)  # type: ignore[misc]
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/util/distributed.py", line 81, in forward
+    dist.all_reduce(x)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/distributed/c10d_logger.py", line 75, in wrapper
+    return func(*args, **kwargs)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/distributed/distributed_c10d.py", line 2219, in all_reduce
+    work = group.allreduce([tensor], opts)
+RuntimeError: [Rank 0]: Ranks 1 failed to pass monitoredBarrier in 600000 ms

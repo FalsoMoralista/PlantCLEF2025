@@ -1,0 +1,55 @@
+INFO:root:called-params config/configs.yaml
+INFO:root:loaded params...
+INFO:root:{'experiment_code': 1, 'k_means': {'K': 7806}, 'patches': {'N': 64}, 'num_workers': 16, 'base_dir': '/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/', 'pretrained_path': 'pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar', 'data': {'class_mapping': 'pretrained_models/class_mapping.txt', 'species_mapping': 'pretrained_models/species_id_to_name.txt', 'test_data': '/home/rtcalumby/adam/luciano/PlantCLEF2025/test_dataset/'}, 'batch_size': 1, 'gradient_accumulation': 128, 'optimization': {'epochs': 100, 'final_lr': 1e-06, 'final_weight_decay': 0.4, 'ipe_scale': 1.0, 'lr': 0.001, 'start_lr': 1e-05, 'warmup': 15, 'weight_decay': 0.04}}
+INFO:root:Running... (rank: 0/2)
+INFO:root:Initialized (rank/world-size) 0/2
+INFO:timm.models._helpers:Loaded state_dict_ema from checkpoint 'pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar'
+Test dataset created for rank 0 world_size:  2
+Test dataset, length: 1053
+INFO:root:Loading Vision Transformer: VisionTransformer(
+  (linear): Linear(in_features=1024, out_features=7806, bias=True)
+  (blocks): ModuleList(
+    (0-5): 6 x Block(
+      (norm1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+)
+INFO:root:Using AdamW
+/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/faiss/contrib/torch_utils.py:51: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  x.storage().data_ptr() + x.storage_offset() * 4)
+/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/faiss/contrib/torch_utils.py:51: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  x.storage().data_ptr() + x.storage_offset() * 4)
+Allocated Memory with model loading: 1.0249991416931152  GB
+INFO:root:Epoch 1
+Rank 1
+Test dataset created for rank 1 world_size:  2
+Test dataset, length: 1053
+Allocated Memory with model loading: 1.0249991416931152  GB
+INFO:root:[1,     0/ 1053] - train_loss: 0.4117 -[wd: 1.00e-02] [lr: 1.00e-03][max mem allocated: 3.74e+04] (4375.5 ms)
+INFO:root:[1,   128/ 1053] - train_loss: 0.4117 -[wd: 4.00e-02] [lr: 1.01e-05][max mem allocated: 3.78e+04] (2846.2 ms)
+INFO:root:[1,   256/ 1053] - train_loss: 0.4089 -[wd: 4.00e-02] [lr: 1.01e-05][max mem allocated: 3.80e+04] (2844.5 ms)
+INFO:root:[1,   384/ 1053] - train_loss: 0.4058 -[wd: 4.00e-02] [lr: 1.02e-05][max mem allocated: 3.80e+04] (2843.6 ms)
+INFO:root:[1,   512/ 1053] - train_loss: 0.4026 -[wd: 4.00e-02] [lr: 1.03e-05][max mem allocated: 3.80e+04] (2845.0 ms)
+INFO:root:[1,   640/ 1053] - train_loss: 0.3992 -[wd: 4.00e-02] [lr: 1.03e-05][max mem allocated: 3.80e+04] (2846.0 ms)
+INFO:root:[1,   768/ 1053] - train_loss: 0.3957 -[wd: 4.00e-02] [lr: 1.04e-05][max mem allocated: 3.80e+04] (2847.2 ms)
+INFO:root:[1,   896/ 1053] - train_loss: 0.3920 -[wd: 4.00e-02] [lr: 1.04e-05][max mem allocated: 3.80e+04] (2846.4 ms)
+INFO:root:[1,  1024/ 1053] - train_loss: 0.3882 -[wd: 4.00e-02] [lr: 1.05e-05][max mem allocated: 3.80e+04] (2847.0 ms)
+INFO:root:Loss 0.3497
+INFO:root:Epoch 2
+INFO:root:[2,     0/ 1053] - train_loss: 0.3498 -[wd: 4.00e-02] [lr: 1.05e-05][max mem allocated: 3.80e+04] (3106.6 ms)
+INFO:root:[2,   128/ 1053] - train_loss: 0.3530 -[wd: 4.00e-02] [lr: 1.06e-05][max mem allocated: 3.80e+04] (2844.5 ms)

@@ -1,5 +1,5 @@
 # Configs
-experiment_code: 0
+experiment_code: 1
 k_means:
   K: 7806
 patches:
@@ -16,7 +16,7 @@ batch_size: 1
 gradient_accumulation: 128
 
 optimization:
-  epochs: 150
+  epochs: 100
   final_lr: 1.0e-06
   final_weight_decay: 0.4
   ipe_scale: 1.0

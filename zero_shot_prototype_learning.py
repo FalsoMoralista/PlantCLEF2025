@@ -33,6 +33,7 @@ from src.models.custom_vision_transformer import VisionTransformer
 from torch.nn.parallel import DistributedDataParallel
 import torch.nn.functional as F
 import numpy as np
+import faiss
 
 # --
 log_timings = True
@@ -122,7 +123,7 @@ def main(args):
 
     model = timm.create_model('vit_base_patch14_reg4_dinov2.lvd142m', pretrained=False, num_classes=len(cid_to_spid), checkpoint_path=pretrained_path)
     model.head = torch.nn.Identity() # Replace classification head by identity layer for feature extraction
-
+    model.to(device)
     data_config = timm.data.resolve_model_data_config(model)
 
     test_dataset, test_dataloader, dist_sampler = build_test_dataset(image_folder=test_dir,
@@ -136,9 +137,10 @@ def main(args):
     use_bfloat16 = True
     ipe = len(test_dataloader)
     print('Test dataset, length:', ipe * batch_size)
-    ViT = VisionTransformer(img_size=[2048,2048], pretrained_patch_embedder=model, patch_size=patch_size, embed_dim=768, depth=6)
+    ViT = VisionTransformer(img_size=[2048,2048], pretrained_patch_embedder=None, patch_size=patch_size, embed_dim=768, depth=6)
     logger.info('Loading Vision Transformer: %s' %(ViT))
     ViT.to(device)
+    
     # Create optimizer and config model
     optimizer, scaler, scheduler, wd_scheduler = init_opt(
         encoder=ViT,
@@ -153,12 +155,20 @@ def main(args):
         ipe_scale=ipe_scale,
         use_bfloat16=use_bfloat16)
 
-
+    model = DistributedDataParallel(model, static_graph=True, find_unused_parameters=False)
     ViT = DistributedDataParallel(ViT, static_graph=True, find_unused_parameters=False)
     ViT_noddp = ViT.module
     print('Allocated Memory with model loading:', (torch.cuda.memory_allocated() / 1024.**3), ' GB')
 
     prototypes = torch.load('proxy/prototypes.pt').to(device)
+    
+    resources = faiss.StandardGpuResources()
+    config = faiss.GpuIndexFlatConfig()
+    config.device = 0
+
+    cpu_index = faiss.IndexFlatL2(768)
+    gpu_index = faiss.index_cpu_to_gpu(resources, 0, cpu_index)
+    gpu_index.add(prototypes) # create a faiss gpu index for nearest neighbor search for cluster prototypes
 
     def save_checkpoint(epoch):
         save_dict = {
@@ -199,7 +209,8 @@ def main(args):
                     _new_wd = wd_scheduler.step()
 
                 x = preprocessed_images.to(device, non_blocking=True)
-                y = prototypes
+                
+                y = torch.zeros_like(prototypes) # 
 
                 def criterion(z, h):
                     loss = F.mse_loss(z, h)
@@ -207,7 +218,14 @@ def main(args):
                     return loss
 
                 with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=use_bfloat16):
-                    output = ViT(x.squeeze(0)).squeeze(0)
+                    with torch.inference_mode():
+                        dino_patch_embeddings = model(x.squeeze(0)) # if batch >1 do not squeeze                    
+                    
+                    _, batch_assignments = gpu_index.search(dino_patch_embeddings.contiguous(), 1) # make congiguous to match faiss requirements
+                    batch_assignments = batch_assignments.squeeze(1) # Remove singleton dim
+                    y[batch_assignments] = prototypes[batch_assignments].clone() # fill labels with correspondent batch assignments
+
+                    output = ViT(dino_patch_embeddings.unsqueeze(0)).squeeze(0)
                     #print('output:', output.size())
                     loss = criterion(output.T, y)
 
