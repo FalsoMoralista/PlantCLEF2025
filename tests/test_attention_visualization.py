@@ -12,7 +12,7 @@ from visualizer import AttentionMapVisualizer
 import faiss
 import faiss.contrib.torch_utils
 
-from src.models.custom_vision_transformer import PilotVisionTransformer
+from src.models.custom_vision_transformer import PilotVisionTransformer, VisionTransformer
 from PIL import Image
 import matplotlib.pyplot as plt
 
@@ -70,33 +70,52 @@ epochs = [5,10,15,20,25,30,35,40]
 
 model = timm.create_model('vit_base_patch14_reg4_dinov2.lvd142m', pretrained=False, num_classes=len(cid_to_spid), checkpoint_path=pretrained_path)
 model.head = torch.nn.Identity() # Replace classification head by identity layer for feature extraction
+model.to(device)
 
 data_config = timm.data.resolve_model_data_config(model)
 transform = build_test_transform(data_config, n=64)
 
-
 r_path = '/home/rtcalumby/adam/luciano/PlantCLEF2025/logs/experiment_0/'
+
+pilot = False
+
+if not pilot:
+    epochs = [5,10,15,20,25,30]
+    r_path = '/home/rtcalumby/adam/luciano/PlantCLEF2025/logs/experiment_1/'
+
 for epoch_no in epochs:
-    checkpoint = torch.load(r_path+f"experiment_0-ep{epoch_no}.pth.tar", map_location=torch.device('cpu'))
-    print('Checkpoint keys:', list(checkpoint.keys()))
+    if pilot:
+        checkpoint = torch.load(r_path+f"experiment_0-ep{epoch_no}.pth.tar", map_location=torch.device('cpu'))
+        ViT = PilotVisionTransformer(img_size=[2048,2048], pretrained_patch_embedder=model,patch_size=patch_size, embed_dim=768, depth=6)
+        print('Loading Vision Transformer:', ViT)        
+    else:
+        checkpoint = torch.load(r_path+f"experiment_1-ep{epoch_no}.pth.tar", map_location=torch.device('cpu'))
+        ViT = VisionTransformer(img_size=[2048,2048], pretrained_patch_embedder=None, patch_size=patch_size, embed_dim=768, depth=6)
+        print('Loading Vision Transformer:', ViT)                
+
     pretrained_dict = checkpoint['custom_vit']
+    msg = ViT.load_state_dict(pretrained_dict)
+    print('Loading state_dict:', msg)
+    ViT.linear = torch.nn.Identity()
+    ViT.to(device)
 
     image_name = images[0]
     img = Image.open(f'../pretrained_models/{image_name}')
     img_tensor = transform(img)#.unsqueeze(0)
     img_tensor = img_tensor.to(device)
+    print('img tensor:', img_tensor.size())
 
-    ViT = PilotVisionTransformer(img_size=[2048,2048], pretrained_patch_embedder=model,patch_size=patch_size, embed_dim=768, depth=6)
-    print('Loading Vision Transformer:', ViT)
-    msg = ViT.load_state_dict(pretrained_dict)
-    print('MSG:', msg)
-    ViT.linear = torch.nn.Identity()
-    ViT.to(device)
-    x, attn = ViT(img_tensor, return_attention=True)
+    if pilot:
+        x, attn = ViT(img_tensor, return_attention=True)
+    else:
+        with torch.inference_mode():
+            dino_patch_embeddings = model(img_tensor).unsqueeze(0)
+            x, attn = ViT(dino_patch_embeddings,  return_attention=True)
     print('X size:', x.size())
     print('len attn:', len(attn))
     print('attn size:', attn[0][1].size())
-    visualize_global_attention_on_image(img, attn_map=attn[5][1],save_path=f'attention/1/pilot_epoch_{epoch_no}_block_6.jpg')
+    visualize_global_attention_on_image(img, attn_map=attn[5][1],save_path=f'attention/dynamic/pilot_epoch_{epoch_no}_block_6.jpg')
+
 exit(0)
 
 

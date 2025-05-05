@@ -1,0 +1,40 @@
+INFO:faiss.loader:Loading faiss with AVX2 support.
+INFO:faiss.loader:Successfully loaded faiss with AVX2 support.
+INFO:timm.models._helpers:Loaded state_dict_ema from checkpoint '/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar'
+Loading Vision Transformer: VisionTransformer(
+  (linear): Linear(in_features=1024, out_features=7806, bias=True)
+  (blocks): ModuleList(
+    (0-5): 6 x Block(
+      (norm1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+      (attn): Attention(
+        (qkv): Linear(in_features=768, out_features=2304, bias=True)
+        (attn_drop): Dropout(p=0.0, inplace=False)
+        (proj): Linear(in_features=768, out_features=768, bias=True)
+        (proj_drop): Dropout(p=0.0, inplace=False)
+      )
+      (drop_path): Identity()
+      (norm2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+      (mlp): MLP(
+        (fc1): Linear(in_features=768, out_features=3072, bias=True)
+        (act): GELU(approximate='none')
+        (fc2): Linear(in_features=3072, out_features=768, bias=True)
+        (drop): Dropout(p=0.0, inplace=False)
+      )
+    )
+  )
+  (norm): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+)
+Loading state_dict: <All keys matched successfully>
+Input size: torch.Size([1024, 768])
+Traceback (most recent call last):
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/tests/test_attention_visualization.py", line 112, in <module>
+    x, attn = ViT(dino_patch_embeddings,  return_attention=True)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/tests/../src/models/custom_vision_transformer.py", line 341, in forward
+    pos_embed = self.interpolate_pos_encoding(x, self.pos_embed)
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/tests/../src/models/custom_vision_transformer.py", line 377, in interpolate_pos_encoding
+    pos_embed.reshape(1, int(math.sqrt(N)), int(math.sqrt(N)), dim).permute(0, 3, 1, 2),
+RuntimeError: shape '[1, 31, 31, 768]' is invalid for input of size 785664

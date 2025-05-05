@@ -367,3 +367,18 @@ INFO:root:[30,   512/ 1053] - train_loss: 0.0042 -[wd: 4.00e-02] [lr: 2.48e-05][
 INFO:root:[30,   640/ 1053] - train_loss: 0.0042 -[wd: 4.00e-02] [lr: 2.49e-05][max mem allocated: 3.80e+04] (2851.9 ms)
 INFO:root:[30,   768/ 1053] - train_loss: 0.0042 -[wd: 4.00e-02] [lr: 2.49e-05][max mem allocated: 3.80e+04] (2853.6 ms)
 INFO:root:[30,   896/ 1053] - train_loss: 0.0042 -[wd: 4.00e-02] [lr: 2.50e-05][max mem allocated: 3.80e+04] (2853.1 ms)
+INFO:root:[30,  1024/ 1053] - train_loss: 0.0042 -[wd: 4.00e-02] [lr: 2.50e-05][max mem allocated: 3.80e+04] (2852.2 ms)
+INFO:root:Loss 0.0039
+INFO:root:Epoch 31
+INFO:root:[31,     0/ 1053] - train_loss: 0.0034 -[wd: 4.00e-02] [lr: 2.50e-05][max mem allocated: 3.80e+04] (3116.6 ms)
+INFO:root:[31,   128/ 1053] - train_loss: 0.0042 -[wd: 4.00e-02] [lr: 2.51e-05][max mem allocated: 3.80e+04] (2848.5 ms)
+INFO:root:[31,   256/ 1053] - train_loss: 0.0041 -[wd: 4.00e-02] [lr: 2.52e-05][max mem allocated: 3.80e+04] (2852.8 ms)
+INFO:root:[31,   384/ 1053] - train_loss: 0.0041 -[wd: 4.00e-02] [lr: 2.52e-05][max mem allocated: 3.80e+04] (2851.8 ms)
+INFO:root:[31,   512/ 1053] - train_loss: 0.0042 -[wd: 4.00e-02] [lr: 2.53e-05][max mem allocated: 3.80e+04] (2852.9 ms)
+INFO:root:[31,   640/ 1053] - train_loss: 0.0042 -[wd: 4.00e-02] [lr: 2.54e-05][max mem allocated: 3.80e+04] (2852.4 ms)
+INFO:root:[31,   768/ 1053] - train_loss: 0.0042 -[wd: 4.00e-02] [lr: 2.54e-05][max mem allocated: 3.80e+04] (2851.6 ms)
+INFO:root:[31,   896/ 1053] - train_loss: 0.0042 -[wd: 4.00e-02] [lr: 2.55e-05][max mem allocated: 3.80e+04] (2852.1 ms)
+INFO:root:[31,  1024/ 1053] - train_loss: 0.0042 -[wd: 4.00e-02] [lr: 2.55e-05][max mem allocated: 3.80e+04] (2852.5 ms)
+INFO:root:Loss 0.0035
+INFO:root:Epoch 32
+INFO:root:[32,     0/ 1053] - train_loss: 0.0038 -[wd: 4.00e-02] [lr: 2.55e-05][max mem allocated: 3.80e+04] (2976.0 ms)

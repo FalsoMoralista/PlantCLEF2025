@@ -301,7 +301,7 @@ class VisionTransformer(nn.Module):
             if m.bias is not None:
                 nn.init.constant_(m.bias, 0)      
 
-    def forward(self, x, masks=None):
+    def forward(self, x, masks=None, return_attention=False):
         if masks is not None:
             if not isinstance(masks, list):
                 masks = [masks]
@@ -335,7 +335,7 @@ class VisionTransformer(nn.Module):
             bilinear interpolation calculates the value for each position in the grid by considering the values of nearby positions in the original positional embeddings
 
         '''
-        #print('Input size:', x.size())
+        print('Input size:', x.size())
         
         # -- add positional embedding to x
         pos_embed = self.interpolate_pos_encoding(x, self.pos_embed)
@@ -345,9 +345,14 @@ class VisionTransformer(nn.Module):
         if masks is not None:
             x = apply_masks(x, masks)
 
+        attentions = []
         # -- fwd prop
         for i, blk in enumerate(self.blocks):
-            x = blk(x)
+            if return_attention:
+                x, attn = blk(x, return_attention=True)
+                attentions.append((i, attn))
+            else:
+                x = blk(x)
 
         if self.norm is not None:
             x = self.norm(x)
@@ -355,6 +360,9 @@ class VisionTransformer(nn.Module):
         #print('Allocated Memory after forwarding:', (torch.cuda.memory_allocated() / 1024.**3), ' GB')
         #print('Size after forwarding:', x.size())
         x = self.linear(x.transpose(1,2))
+        
+        if return_attention:
+            return x, attentions
         return x
 
     def interpolate_pos_encoding(self, x, pos_embed):
