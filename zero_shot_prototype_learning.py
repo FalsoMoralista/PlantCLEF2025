@@ -29,11 +29,10 @@ import sys
 import multiprocessing as mp
 import torch.distributed as dist
 from util.distributed import init_distributed, AllReduce
-from src.models.custom_vision_transformer import VisionTransformer
+from src.models.custom_vision_transformer import PilotVisionTransformer
 from torch.nn.parallel import DistributedDataParallel
 import torch.nn.functional as F
 import numpy as np
-import faiss
 
 # --
 log_timings = True
@@ -128,7 +127,8 @@ def main(args):
 
     test_dataset, test_dataloader, dist_sampler = build_test_dataset(image_folder=test_dir,
                                                 data_config=data_config,
-                                                num_workers=8,
+                                                input_resolution=(3072,2048),
+                                                num_workers=12,
                                                 n=patch_size,
                                                 world_size=world_size,
                                                 rank=rank,
@@ -137,7 +137,7 @@ def main(args):
     use_bfloat16 = True
     ipe = len(test_dataloader)
     print('Test dataset, length:', ipe * batch_size)
-    ViT = VisionTransformer(img_size=[2048,2048], pretrained_patch_embedder=None, patch_size=patch_size, embed_dim=768, depth=6)
+    ViT = PilotVisionTransformer(img_size=[3072,2048], pretrained_patch_embedder=model, patch_size=patch_size, embed_dim=768, depth=6)
     logger.info('Loading Vision Transformer: %s' %(ViT))
     ViT.to(device)
     
@@ -155,21 +155,12 @@ def main(args):
         ipe_scale=ipe_scale,
         use_bfloat16=use_bfloat16)
 
-    model = DistributedDataParallel(model, static_graph=True, find_unused_parameters=False)
     ViT = DistributedDataParallel(ViT, static_graph=True, find_unused_parameters=False)
     ViT_noddp = ViT.module
     print('Allocated Memory with model loading:', (torch.cuda.memory_allocated() / 1024.**3), ' GB')
 
     prototypes = torch.load('proxy/prototypes.pt').to(device)
     
-    resources = faiss.StandardGpuResources()
-    config = faiss.GpuIndexFlatConfig()
-    config.device = 0
-
-    cpu_index = faiss.IndexFlatL2(768)
-    gpu_index = faiss.index_cpu_to_gpu(resources, 0, cpu_index)
-    gpu_index.add(prototypes) # create a faiss gpu index for nearest neighbor search for cluster prototypes
-
     def save_checkpoint(epoch):
         save_dict = {
             'custom_vit': ViT_noddp.state_dict(),
@@ -210,7 +201,7 @@ def main(args):
 
                 x = preprocessed_images.to(device, non_blocking=True)
                 
-                y = torch.zeros_like(prototypes) # 
+                y = prototypes
 
                 def criterion(z, h):
                     loss = F.mse_loss(z, h)
@@ -218,15 +209,7 @@ def main(args):
                     return loss
 
                 with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=use_bfloat16):
-                    with torch.inference_mode():
-                        dino_patch_embeddings = model(x.squeeze(0)) # if batch >1 do not squeeze                    
-                    
-                    _, batch_assignments = gpu_index.search(dino_patch_embeddings.contiguous(), 1) # make congiguous to match faiss requirements
-                    batch_assignments = batch_assignments.squeeze(1) # Remove singleton dim
-                    y[batch_assignments] = prototypes[batch_assignments].clone() # fill labels with correspondent batch assignments
-
-                    output = ViT(dino_patch_embeddings.unsqueeze(0)).squeeze(0)
-                    #print('output:', output.size())
+                    output = ViT(x.squeeze(0)).squeeze(0)
                     loss = criterion(output.T, y)
 
                 loss_meter.update(loss)
@@ -245,7 +228,6 @@ def main(args):
                     grad_stats = grad_logger(ViT_noddp.named_parameters())
                     optimizer.zero_grad()
                     
-
                 return (float(loss), _new_lr , _new_wd, grad_stats)
 
             # -- 

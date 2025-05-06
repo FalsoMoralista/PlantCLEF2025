@@ -24,11 +24,11 @@ class CustomImageFolder(datasets.ImageFolder):
         return img, label, filename
 
 
-def build_test_transform(data_config, n=None):
+def build_test_transform(data_config, input_resolution=(2048,2048), n=None):
     # Transform by doing resize then crop may keep the aspect ratio but may cut parts of the image. 
     # The transform below may distort the image, as aspect ratio may not be preserved but the content remains. 
     transform = transforms.Compose([
-        transforms.Resize((2048,2048), interpolation=PIL.Image.BICUBIC),  # Optional: scale to be divisible by 16
+        transforms.Resize(input_resolution, interpolation=PIL.Image.BICUBIC),  # Optional: scale to be divisible by 16
         transforms.ToTensor(),  # Convert to tensor: (C, H, W)
         transforms.Normalize(mean=data_config['mean'], std=data_config['std']),
         GridCropAndResize(crop_size=n),
@@ -72,9 +72,9 @@ def build_train_dataset(image_folder, world_size, rank, data_config, batch_size=
     print('Data Loader length:', len(data_loader), f'process_id: {rank}')   
     return dataset, data_loader, dist_sampler
 
-def build_test_dataset(image_folder, data_config, batch_size=1, num_workers=16, n=None, world_size=0, rank=None, shuffle=False):
+def build_test_dataset(image_folder, data_config, input_resolution=(2048,2048), batch_size=1, num_workers=16, n=None, world_size=0, rank=None, shuffle=False):
     
-    transform = build_test_transform(data_config, n=n)
+    transform = build_test_transform(data_config, input_resolution=input_resolution ,n=n)
 
     dataset = CustomImageFolder(image_folder, transform=transform)
     

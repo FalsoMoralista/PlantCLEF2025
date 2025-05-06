@@ -15,7 +15,46 @@ import faiss.contrib.torch_utils
 from src.models.custom_vision_transformer import PilotVisionTransformer
 from PIL import Image
 
-def visualize_global_attention_on_image(
+def visualize_global_attention_on_image(image, attn_map, patch_size=64, save_path=None):
+    import torchvision.transforms.functional as TF
+    from torchvision.utils import make_grid
+
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from PIL import Image
+
+
+    """
+    Visualizes global attention (mean over all tokens and heads) as a heatmap over the original image.
+
+    image: PIL image (2048x2048)
+    attn_map: Tensor of shape (1, num_heads, 1024, 1024)
+    """
+    assert attn_map.shape[-1] == attn_map.shape[-2], "Expected square attention map"
+
+    # 1. Average over heads
+    attn_map = attn_map.mean(dim=1)[0]  # Shape: [1024, 1024]
+
+    # 2. Aggregate attention received by each patch (i.e., sum over rows → what each token receives)
+    global_attention = attn_map.sum(dim=0)  # [1024]
+
+    # 3. Normalize
+    global_attention = (global_attention - global_attention.min()) / (global_attention.max() - global_attention.min())
+    global_attention = global_attention.reshape(32, 32).detach().cpu().numpy()
+
+    # 4. Resize to match image
+    attn_map_resized = TF.resize(TF.to_pil_image(global_attention), image.size, interpolation=Image.BICUBIC)
+
+    # 5. Overlay
+    plt.figure(figsize=(12, 12))
+    plt.imshow(image)
+    plt.imshow(attn_map_resized, cmap='jet', alpha=0.5)
+    plt.axis('off')
+    if save_path:
+        plt.savefig(save_path, bbox_inches='tight')
+    plt.show()
+
+def mask_image_from_attention(
     image, attn_map, patch_size=64, threshold=0.2, replace_mode='grayscale', save_path=None
 ):
     """
@@ -82,8 +121,8 @@ else:
     torch.cuda.set_device(device)
 
 images = ['GUARDEN-AMB-PR13-1-2-20240417.jpg']
-images = ['CBN-can-A6-20230705.jpg']
-epochs = [15]
+#images = ['CBN-can-A6-20230705.jpg']
+epochs = [15]#, 20, 25, 40, 60, 80, 85]
 
 model = timm.create_model('vit_base_patch14_reg4_dinov2.lvd142m', pretrained=False, num_classes=len(cid_to_spid), checkpoint_path=pretrained_path)
 model.head = torch.nn.Identity() # Replace classification head by identity layer for feature extraction
@@ -117,12 +156,13 @@ for epoch_no in epochs:
     print('X size:', x.size())
     print('len attn:', len(attn))
     print('attn size:', attn[0][1].size())
-    attn_map = (attn[5][1] + attn[4][1]+ attn[3][1])/3
-    #visualize_global_attention_on_image(img, attn_map=attn_map,save_path=f'attention/pilot/pilot_epoch_{epoch_no}_block_6_5_AVG.jpg')
-    visualize_global_attention_on_image(img,attn_map=attn_map,patch_size=64,threshold=0.3,replace_mode='black',save_path=f'attention/pilot/epoch_{epoch_no}_blocks_6_5_4_score=0.3.jpg')
-    visualize_global_attention_on_image(img,attn_map=attn_map,patch_size=64,threshold=0.4,replace_mode='black',save_path=f'attention/pilot/epoch_{epoch_no}_blocks_6_5_4_score=0.4.jpg')
-    visualize_global_attention_on_image(img,attn_map=attn_map,patch_size=64,threshold=0.5,replace_mode='black',save_path=f'attention/pilot/epoch_{epoch_no}_blocks_6_5_4_score=0.5.jpg')
-    visualize_global_attention_on_image(img,attn_map=attn_map,patch_size=64,threshold=0.6,replace_mode='black',save_path=f'attention/pilot/epoch_{epoch_no}_blocks_6_5_4_score=0.6.jpg')
-    visualize_global_attention_on_image(img,attn_map=attn_map,patch_size=64,threshold=0.65,replace_mode='black',save_path=f'attention/pilot/epoch_{epoch_no}_blocks_6_5_4_score=0.65.jpg')
-    visualize_global_attention_on_image(img,attn_map=attn_map,patch_size=64,threshold=0.75,replace_mode='black',save_path=f'attention/pilot/epoch_{epoch_no}_blocks_6_5_4_score=0.75.jpg')
+    attn_map = (attn[5][1] + attn[4][1]+ attn[3][1] + attn[2][1] + attn[1][1] + attn[0][1])/6
+
+    #visualize_global_attention_on_image(img, attn_map=attn_map, save_path=f'attention/pilot/pilot_epoch_{epoch_no}_all_blocks_AVG.jpg')
+    mask_image_from_attention(img,attn_map=attn_map,patch_size=64,threshold=0.3,replace_mode='black',save_path=f'attention/pilot/epoch_{epoch_no}_blocks_6_5_4_score=0.3.jpg')
+    mask_image_from_attention(img,attn_map=attn_map,patch_size=64,threshold=0.4,replace_mode='black',save_path=f'attention/pilot/epoch_{epoch_no}_blocks_6_5_4_score=0.4.jpg')
+    mask_image_from_attention(img,attn_map=attn_map,patch_size=64,threshold=0.5,replace_mode='black',save_path=f'attention/pilot/epoch_{epoch_no}_blocks_6_5_4_score=0.5.jpg')
+    #mask_image_from_attention(img,attn_map=attn_map,patch_size=64,threshold=0.6,replace_mode='black',save_path=f'attention/pilot/epoch_{epoch_no}_blocks_6_5_4_score=0.6.jpg')
+    #mask_image_from_attention(img,attn_map=attn_map,patch_size=64,threshold=0.65,replace_mode='black',save_path=f'attention/pilot/epoch_{epoch_no}_blocks_6_5_4_score=0.65.jpg')
+    #mask_image_from_attention(img,attn_map=attn_map,patch_size=64,threshold=0.65,replace_mode='black',save_path=f'attention/pilot/epoch_{epoch_no}_blocks_6_5_4_score=0.7.jpg')
 exit(0)

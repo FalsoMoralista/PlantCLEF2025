@@ -465,8 +465,7 @@ class PilotVisionTransformer(nn.Module):
         
         #B, P, C, H, W = x.size() 
         #print('Allocated Memory for images:', (torch.cuda.memory_allocated() / 1024.**3), ' GB')
-        #print(x.size())
-        
+        #print('input size:', x.size())
         
         with torch.inference_mode():
             embedded_x = self.patch_embed(x).unsqueeze(0) # Create a batch dim
