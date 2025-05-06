@@ -63,8 +63,10 @@ else:
     torch.cuda.set_device(device)
 
 
-images = ['GUARDEN-AMB-PR13-1-2-20240417.jpg'] # ('../pretrained_models/RNNB-8-8-20240118.jpg')
-epochs = [5,10,15,20,25,30,35,40]
+images = ['RNNB-8-8-20240118.jpg']
+images = ['GUARDEN-AMB-PR13-1-2-20240417.jpg']
+#images = ['CBN-can-A6-20230705.jpg']
+epochs = [5,10,15,20,25,30,35,40,45,50,55,60]
 
 #epoch_no = 40
 
@@ -77,10 +79,10 @@ transform = build_test_transform(data_config, n=64)
 
 r_path = '/home/rtcalumby/adam/luciano/PlantCLEF2025/logs/experiment_0/'
 
-pilot = False
+pilot = True
 
 if not pilot:
-    epochs = [5,10,15,20,25,30]
+    epochs = [5,10,15,20,25,30,45,50,55,60,65]
     r_path = '/home/rtcalumby/adam/luciano/PlantCLEF2025/logs/experiment_1/'
 
 for epoch_no in epochs:
@@ -114,8 +116,12 @@ for epoch_no in epochs:
     print('X size:', x.size())
     print('len attn:', len(attn))
     print('attn size:', attn[0][1].size())
-    visualize_global_attention_on_image(img, attn_map=attn[5][1],save_path=f'attention/dynamic/pilot_epoch_{epoch_no}_block_6.jpg')
-
+    attn_map = (attn[5][1] + attn[4][1]+ attn[3][1])/3
+    if pilot:
+        #visualize_global_attention_on_image(img, attn_map=attn[5][1],save_path=f'attention/pilot/pilot_epoch_{epoch_no}_block_6.jpg')
+        visualize_global_attention_on_image(img, attn_map=attn_map,save_path=f'attention/pilot/pilot_epoch_{epoch_no}_block_6_5_AVG.jpg')
+    else:
+        visualize_global_attention_on_image(img, attn_map=attn[5][1],save_path=f'attention/dynamic/dynamic_epoch_{epoch_no}_block_6.jpg')
 exit(0)
 
 
