@@ -1,12 +1,8 @@
-INFO:root:called-params config/configs.yaml
-INFO:root:loaded params...
-INFO:root:{'experiment_code': 2, 'k_means': {'K': 7806}, 'patches': {'N': 64}, 'num_workers': 16, 'base_dir': '/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/', 'pretrained_path': 'pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar', 'data': {'class_mapping': 'pretrained_models/class_mapping.txt', 'species_mapping': 'pretrained_models/species_id_to_name.txt', 'test_data': '/home/rtcalumby/adam/luciano/PlantCLEF2025/test_dataset/'}, 'batch_size': 1, 'gradient_accumulation': 128, 'optimization': {'epochs': 120, 'final_lr': 1e-06, 'final_weight_decay': 0.4, 'ipe_scale': 1.0, 'lr': 0.001, 'start_lr': 1e-05, 'warmup': 15, 'weight_decay': 0.04}}
-INFO:root:Running... (rank: 0/2)
-INFO:root:Initialized (rank/world-size) 0/2
-INFO:timm.models._helpers:Loaded state_dict_ema from checkpoint 'pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar'
-Test dataset created for rank 0 world_size:  2
-Test dataset, length: 1053
-INFO:root:Loading Vision Transformer: PilotVisionTransformer(
+INFO:faiss.loader:Loading faiss with AVX2 support.
+INFO:faiss.loader:Successfully loaded faiss with AVX2 support.
+len images: 20
+INFO:timm.models._helpers:Loaded state_dict_ema from checkpoint '/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar'
+Loading Vision Transformer: PilotVisionTransformer(
   (patch_embed): VisionTransformer(
     (patch_embed): PatchEmbed(
       (proj): Conv2d(3, 768, kernel_size=(14, 14), stride=(14, 14))
@@ -310,7 +306,7 @@ INFO:root:Loading Vision Transformer: PilotVisionTransformer(
     (head_drop): Dropout(p=0.0, inplace=False)
     (head): Identity()
   )
-  (linear): Linear(in_features=1536, out_features=7806, bias=True)
+  (linear): Linear(in_features=1024, out_features=7806, bias=True)
   (blocks): ModuleList(
     (0-5): 6 x Block(
       (norm1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
@@ -332,72 +328,10 @@ INFO:root:Loading Vision Transformer: PilotVisionTransformer(
   )
   (norm): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
 )
-INFO:root:Using AdamW
-Allocated Memory with model loading: 1.0564966201782227  GB
-INFO:root:Epoch 1
-Rank 1
-Test dataset created for rank 1 world_size:  2
-Test dataset, length: 1053
-Allocated Memory with model loading: 1.0564966201782227  GB
-INFO:root:[1,     0/ 1053] - train_loss: 0.8508 -[wd: 1.00e-02] [lr: 1.00e-03][max mem allocated: 5.55e+04] (7749.4 ms)
-INFO:root:[1,   128/ 1053] - train_loss: 0.8515 -[wd: 4.00e-02] [lr: 1.01e-05][max mem allocated: 5.59e+04] (5252.7 ms)
-INFO:root:[1,   256/ 1053] - train_loss: 0.8455 -[wd: 4.00e-02] [lr: 1.01e-05][max mem allocated: 5.61e+04] (5740.8 ms)
-INFO:root:[1,   384/ 1053] - train_loss: 0.8395 -[wd: 4.00e-02] [lr: 1.02e-05][max mem allocated: 5.61e+04] (5730.3 ms)
-INFO:root:[1,   512/ 1053] - train_loss: 0.8334 -[wd: 4.00e-02] [lr: 1.03e-05][max mem allocated: 5.61e+04] (5725.3 ms)
-INFO:root:[1,   640/ 1053] - train_loss: 0.8272 -[wd: 4.00e-02] [lr: 1.03e-05][max mem allocated: 5.61e+04] (5720.7 ms)
-INFO:root:[1,   768/ 1053] - train_loss: 0.8209 -[wd: 4.00e-02] [lr: 1.04e-05][max mem allocated: 5.61e+04] (5717.6 ms)
-INFO:root:[1,   896/ 1053] - train_loss: 0.8143 -[wd: 4.00e-02] [lr: 1.04e-05][max mem allocated: 5.61e+04] (5715.4 ms)
-INFO:root:[1,  1024/ 1053] - train_loss: 0.8076 -[wd: 4.00e-02] [lr: 1.05e-05][max mem allocated: 5.61e+04] (5713.0 ms)
-INFO:root:Loss 0.7490
-INFO:root:Epoch 2
-INFO:root:[2,     0/ 1053] - train_loss: 0.7392 -[wd: 4.00e-02] [lr: 1.05e-05][max mem allocated: 5.61e+04] (5620.0 ms)
-INFO:root:[2,   128/ 1053] - train_loss: 0.7453 -[wd: 4.00e-02] [lr: 1.06e-05][max mem allocated: 5.61e+04] (5653.9 ms)
-INFO:root:[2,   256/ 1053] - train_loss: 0.7377 -[wd: 4.00e-02] [lr: 1.06e-05][max mem allocated: 5.61e+04] (5660.9 ms)
-INFO:root:[2,   384/ 1053] - train_loss: 0.7302 -[wd: 4.00e-02] [lr: 1.07e-05][max mem allocated: 5.61e+04] (5664.8 ms)
-INFO:root:[2,   512/ 1053] - train_loss: 0.7225 -[wd: 4.00e-02] [lr: 1.08e-05][max mem allocated: 5.61e+04] (5668.5 ms)
-INFO:root:[2,   640/ 1053] - train_loss: 0.7146 -[wd: 4.00e-02] [lr: 1.08e-05][max mem allocated: 5.61e+04] (5670.5 ms)
-INFO:root:[2,   768/ 1053] - train_loss: 0.7067 -[wd: 4.00e-02] [lr: 1.09e-05][max mem allocated: 5.61e+04] (5670.5 ms)
-INFO:root:[2,   896/ 1053] - train_loss: 0.6988 -[wd: 4.00e-02] [lr: 1.09e-05][max mem allocated: 5.61e+04] (5671.1 ms)
-INFO:root:[2,  1024/ 1053] - train_loss: 0.6910 -[wd: 4.00e-02] [lr: 1.10e-05][max mem allocated: 5.61e+04] (5672.4 ms)
-INFO:root:Loss 0.6245
-INFO:root:Epoch 3
-INFO:root:[3,     0/ 1053] - train_loss: 0.6199 -[wd: 4.00e-02] [lr: 1.10e-05][max mem allocated: 5.61e+04] (5246.3 ms)
-INFO:root:[3,   128/ 1053] - train_loss: 0.6206 -[wd: 4.00e-02] [lr: 1.11e-05][max mem allocated: 5.61e+04] (5665.1 ms)
-INFO:root:[3,   256/ 1053] - train_loss: 0.6132 -[wd: 4.00e-02] [lr: 1.11e-05][max mem allocated: 5.61e+04] (5669.9 ms)
-INFO:root:[3,   384/ 1053] - train_loss: 0.6058 -[wd: 4.00e-02] [lr: 1.12e-05][max mem allocated: 5.61e+04] (5670.7 ms)
-INFO:root:[3,   512/ 1053] - train_loss: 0.5986 -[wd: 4.00e-02] [lr: 1.13e-05][max mem allocated: 5.61e+04] (5671.8 ms)
-INFO:root:[3,   640/ 1053] - train_loss: 0.5913 -[wd: 4.00e-02] [lr: 1.13e-05][max mem allocated: 5.61e+04] (5673.0 ms)
-INFO:root:[3,   768/ 1053] - train_loss: 0.5844 -[wd: 4.00e-02] [lr: 1.14e-05][max mem allocated: 5.61e+04] (5673.4 ms)
-INFO:root:[3,   896/ 1053] - train_loss: 0.5774 -[wd: 4.00e-02] [lr: 1.14e-05][max mem allocated: 5.61e+04] (5674.9 ms)
-INFO:root:[3,  1024/ 1053] - train_loss: 0.5706 -[wd: 4.00e-02] [lr: 1.15e-05][max mem allocated: 5.61e+04] (5676.6 ms)
-INFO:root:Loss 0.5091
-INFO:root:Epoch 4
-INFO:root:[4,     0/ 1053] - train_loss: 0.5114 -[wd: 4.00e-02] [lr: 1.15e-05][max mem allocated: 5.61e+04] (5382.0 ms)
-INFO:root:[4,   128/ 1053] - train_loss: 0.5108 -[wd: 4.00e-02] [lr: 1.16e-05][max mem allocated: 5.61e+04] (5658.1 ms)
-INFO:root:[4,   256/ 1053] - train_loss: 0.5047 -[wd: 4.00e-02] [lr: 1.16e-05][max mem allocated: 5.61e+04] (5664.0 ms)
-INFO:root:[4,   384/ 1053] - train_loss: 0.4989 -[wd: 4.00e-02] [lr: 1.17e-05][max mem allocated: 5.61e+04] (5669.6 ms)
-INFO:root:[4,   512/ 1053] - train_loss: 0.4932 -[wd: 4.00e-02] [lr: 1.18e-05][max mem allocated: 5.61e+04] (5671.5 ms)
-INFO:root:[4,   640/ 1053] - train_loss: 0.4876 -[wd: 4.00e-02] [lr: 1.18e-05][max mem allocated: 5.61e+04] (5673.1 ms)
-INFO:root:[4,   768/ 1053] - train_loss: 0.4822 -[wd: 4.00e-02] [lr: 1.19e-05][max mem allocated: 5.61e+04] (5673.0 ms)
-INFO:root:[4,   896/ 1053] - train_loss: 0.4769 -[wd: 4.00e-02] [lr: 1.19e-05][max mem allocated: 5.61e+04] (5674.9 ms)
-INFO:root:[4,  1024/ 1053] - train_loss: 0.4717 -[wd: 4.00e-02] [lr: 1.20e-05][max mem allocated: 5.61e+04] (5675.2 ms)
-INFO:root:Loss 0.4266
-INFO:root:Epoch 5
-INFO:root:[5,     0/ 1053] - train_loss: 0.4262 -[wd: 4.00e-02] [lr: 1.20e-05][max mem allocated: 5.61e+04] (7321.7 ms)
-INFO:root:[5,   128/ 1053] - train_loss: 0.4264 -[wd: 4.00e-02] [lr: 1.21e-05][max mem allocated: 5.61e+04] (5688.0 ms)
-INFO:root:[5,   256/ 1053] - train_loss: 0.4220 -[wd: 4.00e-02] [lr: 1.21e-05][max mem allocated: 5.61e+04] (5682.3 ms)
-INFO:root:[5,   384/ 1053] - train_loss: 0.4178 -[wd: 4.00e-02] [lr: 1.22e-05][max mem allocated: 5.61e+04] (5678.2 ms)
-INFO:root:[5,   512/ 1053] - train_loss: 0.4137 -[wd: 4.00e-02] [lr: 1.23e-05][max mem allocated: 5.61e+04] (5678.0 ms)
-INFO:root:[5,   640/ 1053] - train_loss: 0.4096 -[wd: 4.00e-02] [lr: 1.23e-05][max mem allocated: 5.61e+04] (5678.5 ms)
-INFO:root:[5,   768/ 1053] - train_loss: 0.4057 -[wd: 4.00e-02] [lr: 1.24e-05][max mem allocated: 5.61e+04] (5679.4 ms)
-INFO:root:[5,   896/ 1053] - train_loss: 0.4019 -[wd: 4.00e-02] [lr: 1.24e-05][max mem allocated: 5.61e+04] (5680.5 ms)
-INFO:root:[5,  1024/ 1053] - train_loss: 0.3982 -[wd: 4.00e-02] [lr: 1.25e-05][max mem allocated: 5.61e+04] (5681.0 ms)
-INFO:root:Loss 0.3653
-INFO:root:Epoch 6
-INFO:root:[6,     0/ 1053] - train_loss: 0.3647 -[wd: 4.00e-02] [lr: 1.25e-05][max mem allocated: 5.61e+04] (5584.9 ms)
-INFO:root:[6,   128/ 1053] - train_loss: 0.3658 -[wd: 4.00e-02] [lr: 1.26e-05][max mem allocated: 5.61e+04] (5710.9 ms)
-INFO:root:[6,   256/ 1053] - train_loss: 0.3626 -[wd: 4.00e-02] [lr: 1.26e-05][max mem allocated: 5.61e+04] (5699.2 ms)
-INFO:root:[6,   384/ 1053] - train_loss: 0.3596 -[wd: 4.00e-02] [lr: 1.27e-05][max mem allocated: 5.61e+04] (5701.1 ms)
-INFO:root:[6,   512/ 1053] - train_loss: 0.3566 -[wd: 4.00e-02] [lr: 1.28e-05][max mem allocated: 5.61e+04] (5703.1 ms)
-INFO:root:[6,   640/ 1053] - train_loss: 0.3538 -[wd: 4.00e-02] [lr: 1.28e-05][max mem allocated: 5.61e+04] (5704.2 ms)
-INFO:root:[6,   768/ 1053] - train_loss: 0.3510 -[wd: 4.00e-02] [lr: 1.29e-05][max mem allocated: 5.61e+04] (5710.8 ms)
+Loading state_dict: <All keys matched successfully>
+Traceback (most recent call last):
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/tests/create_test_submission.py", line 158, in <module>
+    img = Image.open(f'../pretrained_models/{image_name}')
+  File "/home/rtcalumby/miniconda3/envs/fgdcc/lib/python3.9/site-packages/PIL/Image.py", line 3227, in open
+    fp = builtins.open(filename, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: '../pretrained_models/CBN-PdlC-C6-20180815.jpg'
