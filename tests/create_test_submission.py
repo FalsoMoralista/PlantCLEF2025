@@ -247,7 +247,7 @@ data_config = timm.data.resolve_model_data_config(model)
 test_dataset, test_dataloader, dist_sampler = build_test_dataset(image_folder=test_dir,
                                             data_config=data_config,
                                             input_resolution=(2048,2048),
-                                            num_workers=8,
+                                            num_workers=16,
                                             n=64,
                                             world_size=1,
                                             rank=0,
@@ -278,10 +278,7 @@ for epoch_no in epochs:
     
     for itr, (img_tensor, _, image_name) in enumerate(test_dataloader):
         if itr % 100 == 0:
-            print(itr,'/',len(test_dataset))
-    #for i, image_name in enumerate(images):
-    #image_name = images[0]
-    #img = Image.open(f'../pretrained_models/{image_name}')
+            print('Iteration:', itr)
         img_tensor = img_tensor.to(device)
         image_name = image_name[0]
         img = Image.open(f'{test_dir}/test/{image_name}')
@@ -299,7 +296,6 @@ for epoch_no in epochs:
         num_blocks = 6
         attn_map = torch.stack([attn[i][1] for i in range(num_blocks)]).mean(0)
         
-        global_attention = attn_map.clone().detach()
         # 1. Average over heads
         global_attention = attn_map.mean(dim=1)[0]  # Shape: [1024, 1024]
 
@@ -345,57 +341,15 @@ for epoch_no in epochs:
             proba, cid = top5_probabilities[0], top5_class_indices[0]
             species_id = cid_to_spid[cid]
             species = spid_to_sp[species_id]
-            if not species_id in image_predictions: #and proba >= 0.5:
+            if not species_id in image_predictions and proba >= 15:
                 image_predictions.append(species_id)
-        
-        #print('Pred: ', image_name.replace('.jpg', ''), len(image_predictions))
+        print(f'Pred: {itr}', image_name.replace('.jpg', ''), len(image_predictions))
         predicted_items.append((image_name.replace('.jpg', ''), image_predictions))
-        #print(predicted_items)
     print('predicted items length:', len(predicted_items))
 
-    with open('predictions_1.csv', mode='w', newline='') as file:
+    with open('predictions_chk_0_prob15_treshold=0.6.csv', mode='w', newline='') as file:
         writer = csv.writer(file, quoting=csv.QUOTE_MINIMAL)
         writer.writerow(['quadrat_id', 'species_ids'])  # Header
 
         for quadrat_id, species_ids in predicted_items:
             writer.writerow([quadrat_id, str(species_ids)])
-
-        #visualize_global_attention_on_image(img, attn_map=attn_map, save_path=f'attention/pilot/empirical/{i}_pilot_epoch_{epoch_no}_all_blocks_AVG.jpg')
-        #mask_image_from_attention(img,attn_map=attn_map,patch_size=64,threshold=0.55,replace_mode='black',save_path=f'attention/pilot/empirical/{i}_epoch_{epoch_no}_blocks_6_5_4_score=0.55.jpg')
-        #plot_crops_in_grid_positions(
-        #    crops=selected_crops,                 # shape (N, C, crop_size, crop_size)
-        #    positions=high_attn_positions,        # shape (N, 2)
-        #    image_size=(2048, 2048),
-        #    crop_size=64,
-        #    save_path=f'attention/pilot/empirical/{i}_epoch_{epoch_no}_crops_score=0.55.jpg'
-        #)
-
-        #mask_image_from_attention(img,attn_map=attn_map,patch_size=64,threshold=0.3,replace_mode='black',save_path=f'attention/pilot/empirical/{i}_epoch_{epoch_no}_blocks_6_5_4_score=0.3.jpg')
-        #mask_image_from_attention(img,attn_map=attn_map,patch_size=64,threshold=0.4,replace_mode='black',save_path=f'attention/pilot/empirical/{i}epoch_{epoch_no}_blocks_6_5_4_score=0.4.jpg')
-        #mask_image_from_attention(img,attn_map=attn_map,patch_size=64,threshold=0.5,replace_mode='black',save_path=f'attention/pilot/empirical/{i}epoch_{epoch_no}_blocks_6_5_4_score=0.5.jpg')
-        #mask_image_from_attention(img,attn_map=attn_map,patch_size=64,threshold=0.6,replace_mode='black',save_path=f'attention/pilot/empirical/{i}epoch_{epoch_no}_blocks_6_5_4_score=0.6.jpg')
-        
-exit(0)
-
-
-images = os.listdir(test_dir+'test/')
-
-
-    #img = None
-    #if 'https://' in args.image or 'http://' in  args.image:
-    #    img = Image.open(urlopen(args.image))
-    #elif args.image != None:
-    #    img = Image.open(args.image)
-        
-    #if img != None:
-    #    img = transforms(img).unsqueeze(0)
-    #    img = img.to(device)
-    #    output = model(img)  # unsqueeze single image into batch of 1
-    #    top5_probabilities, top5_class_indices = torch.topk(output.softmax(dim=1) * 100, k=5)
-    #    top5_probabilities = top5_probabilities.cpu().detach().numpy()
-    #    top5_class_indices = top5_class_indices.cpu().detach().numpy()
-
-    #    for proba, cid in zip(top5_probabilities[0], top5_class_indices[0]):
-    #        species_id = cid_to_spid[cid]
-    #        species = spid_to_sp[species_id]
-    #        print(species_id, species, proba)
