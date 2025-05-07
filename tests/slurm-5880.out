@@ -1,7 +1,5 @@
 INFO:faiss.loader:Loading faiss with AVX2 support.
 INFO:faiss.loader:Successfully loaded faiss with AVX2 support.
-len images: 2105
-INFO:timm.models._helpers:Loaded state_dict_ema from checkpoint '/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar'
 INFO:timm.models._helpers:Loaded state_dict_ema from checkpoint '/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar'
 Loading Vision Transformer: PilotVisionTransformer(
   (patch_embed): VisionTransformer(
@@ -307,7 +305,7 @@ Loading Vision Transformer: PilotVisionTransformer(
     (head_drop): Dropout(p=0.0, inplace=False)
     (head): Identity()
   )
-  (linear): Linear(in_features=1024, out_features=7806, bias=True)
+  (linear): Linear(in_features=1536, out_features=7806, bias=True)
   (blocks): ModuleList(
     (0-5): 6 x Block(
       (norm1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
@@ -330,4 +328,13 @@ Loading Vision Transformer: PilotVisionTransformer(
   (norm): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
 )
 Loading state_dict: <All keys matched successfully>
-predicted items length: 2105
+img tensor: torch.Size([1536, 3, 518, 518])
+X size: torch.Size([1, 768, 1536])
+len attn: 6
+attn size: torch.Size([1, 12, 1536, 1536])
+Traceback (most recent call last):
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/tests/test_attention_visualization.py", line 127, in <module>
+    visualize_global_attention_on_image(img, attn_map=attn_map,save_path=f'attention/pilot/pilot_{experiment_code}_epoch_{epoch_no}_AVG.jpg')
+  File "/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/tests/test_attention_visualization.py", line 39, in visualize_global_attention_on_image
+    global_attention = global_attention.reshape(32, 32).detach().cpu().numpy()
+RuntimeError: shape '[32, 32]' is invalid for input of size 1536

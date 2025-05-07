@@ -247,7 +247,7 @@ data_config = timm.data.resolve_model_data_config(model)
 test_dataset, test_dataloader, dist_sampler = build_test_dataset(image_folder=test_dir,
                                             data_config=data_config,
                                             input_resolution=(2048,2048),
-                                            num_workers=32,
+                                            num_workers=8,
                                             n=64,
                                             world_size=1,
                                             rank=0,
@@ -277,6 +277,8 @@ for epoch_no in epochs:
     ViT.to(device)
     
     for itr, (img_tensor, _, image_name) in enumerate(test_dataloader):
+        if itr % 100 == 0:
+            print(itr,'/',len(test_dataset))
     #for i, image_name in enumerate(images):
     #image_name = images[0]
     #img = Image.open(f'../pretrained_models/{image_name}')
@@ -286,9 +288,10 @@ for epoch_no in epochs:
         img = std_transform(img).to(device)
         #img_tensor = transform(img)#.unsqueeze(0)
         #img_tensor = img_tensor.to(device)
-        with torch.inference_mode():
-            _, attn = ViT(img_tensor.squeeze(0), return_attention=True)
-        del img_tensor
+        with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=True):        
+            with torch.inference_mode():
+                _, attn = ViT(img_tensor.squeeze(0), return_attention=True)
+        #del img_tensor
         #print('X size:', x.size())
         #print('len attn:', len(attn))
         #print('attn size:', attn[0][1].size())
@@ -327,16 +330,18 @@ for epoch_no in epochs:
         B,C,H,W = selected_crops.size() 
         
         image_predictions = []
+        
+        with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=True):
+            with torch.inference_mode():
+                out = dino_cls(selected_crops)
+        #del selected_crops
+        #torch.cuda.empty_cache()
 
-        with torch.inference_mode():
-            out = dino_cls(selected_crops)
-        del selected_crops
-        torch.cuda.empty_cache()
         #print('size: ', out.size())
         for output in out:
             top5_probabilities, top5_class_indices = torch.topk(output.softmax(dim=0) * 100, k=5)
-            top5_probabilities = top5_probabilities.cpu().detach().numpy()
-            top5_class_indices = top5_class_indices.cpu().detach().numpy()
+            top5_probabilities = top5_probabilities.to(torch.float32).cpu().detach().numpy()
+            top5_class_indices = top5_class_indices.to(torch.float32).cpu().detach().numpy()
             proba, cid = top5_probabilities[0], top5_class_indices[0]
             species_id = cid_to_spid[cid]
             species = spid_to_sp[species_id]

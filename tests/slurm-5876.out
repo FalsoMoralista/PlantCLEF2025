@@ -3,6 +3,7 @@ INFO:faiss.loader:Successfully loaded faiss with AVX2 support.
 len images: 2105
 INFO:timm.models._helpers:Loaded state_dict_ema from checkpoint '/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar'
 INFO:timm.models._helpers:Loaded state_dict_ema from checkpoint '/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar'
+Test dataset created for rank 0 world_size:  1
 Loading Vision Transformer: PilotVisionTransformer(
   (patch_embed): VisionTransformer(
     (patch_embed): PatchEmbed(
@@ -330,4 +331,4 @@ Loading Vision Transformer: PilotVisionTransformer(
   (norm): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
 )
 Loading state_dict: <All keys matched successfully>
-predicted items length: 2105
+slurmstepd: error: *** JOB 5876 ON hgx CANCELLED AT 2025-05-07T15:13:04 ***

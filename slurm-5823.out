@@ -441,3 +441,58 @@ INFO:root:Epoch 10
 INFO:root:[10,     0/ 1053] - train_loss: 0.2598 -[wd: 4.00e-02] [lr: 1.45e-05][max mem allocated: 5.61e+04] (9264.4 ms)
 INFO:root:[10,   128/ 1053] - train_loss: 0.2595 -[wd: 4.00e-02] [lr: 1.46e-05][max mem allocated: 5.61e+04] (5664.0 ms)
 INFO:root:[10,   256/ 1053] - train_loss: 0.2589 -[wd: 4.00e-02] [lr: 1.46e-05][max mem allocated: 5.61e+04] (5674.1 ms)
+INFO:root:[10,   384/ 1053] - train_loss: 0.2582 -[wd: 4.00e-02] [lr: 1.47e-05][max mem allocated: 5.61e+04] (5696.3 ms)
+INFO:root:[10,   512/ 1053] - train_loss: 0.2575 -[wd: 4.00e-02] [lr: 1.48e-05][max mem allocated: 5.61e+04] (5688.4 ms)
+INFO:root:[10,   640/ 1053] - train_loss: 0.2569 -[wd: 4.00e-02] [lr: 1.48e-05][max mem allocated: 5.61e+04] (5682.8 ms)
+INFO:root:[10,   768/ 1053] - train_loss: 0.2563 -[wd: 4.00e-02] [lr: 1.49e-05][max mem allocated: 5.61e+04] (5681.8 ms)
+INFO:root:[10,   896/ 1053] - train_loss: 0.2557 -[wd: 4.00e-02] [lr: 1.50e-05][max mem allocated: 5.61e+04] (5688.5 ms)
+INFO:root:[10,  1024/ 1053] - train_loss: 0.2552 -[wd: 4.00e-02] [lr: 1.50e-05][max mem allocated: 5.61e+04] (5692.7 ms)
+INFO:root:Loss 0.2503
+INFO:root:Epoch 11
+INFO:root:[11,     0/ 1053] - train_loss: 0.2508 -[wd: 4.00e-02] [lr: 1.50e-05][max mem allocated: 5.61e+04] (6926.2 ms)
+INFO:root:[11,   128/ 1053] - train_loss: 0.2503 -[wd: 4.00e-02] [lr: 1.51e-05][max mem allocated: 5.61e+04] (5665.5 ms)
+INFO:root:[11,   256/ 1053] - train_loss: 0.2498 -[wd: 4.00e-02] [lr: 1.51e-05][max mem allocated: 5.61e+04] (5668.0 ms)
+INFO:root:[11,   384/ 1053] - train_loss: 0.2494 -[wd: 4.00e-02] [lr: 1.52e-05][max mem allocated: 5.61e+04] (5674.3 ms)
+INFO:root:[11,   512/ 1053] - train_loss: 0.2489 -[wd: 4.00e-02] [lr: 1.53e-05][max mem allocated: 5.61e+04] (5674.9 ms)
+INFO:root:[11,   640/ 1053] - train_loss: 0.2485 -[wd: 4.00e-02] [lr: 1.53e-05][max mem allocated: 5.61e+04] (5675.3 ms)
+INFO:root:[11,   768/ 1053] - train_loss: 0.2481 -[wd: 4.00e-02] [lr: 1.54e-05][max mem allocated: 5.61e+04] (5673.4 ms)
+INFO:root:[11,   896/ 1053] - train_loss: 0.2477 -[wd: 4.00e-02] [lr: 1.55e-05][max mem allocated: 5.61e+04] (5680.3 ms)
+INFO:root:[11,  1024/ 1053] - train_loss: 0.2473 -[wd: 4.00e-02] [lr: 1.55e-05][max mem allocated: 5.61e+04] (5683.2 ms)
+INFO:root:Loss 0.2444
+INFO:root:Epoch 12
+INFO:root:[12,     0/ 1053] - train_loss: 0.2442 -[wd: 4.00e-02] [lr: 1.55e-05][max mem allocated: 5.61e+04] (9763.8 ms)
+INFO:root:[12,   128/ 1053] - train_loss: 0.2440 -[wd: 4.00e-02] [lr: 1.56e-05][max mem allocated: 5.61e+04] (5715.7 ms)
+INFO:root:[12,   256/ 1053] - train_loss: 0.2437 -[wd: 4.00e-02] [lr: 1.56e-05][max mem allocated: 5.61e+04] (5695.2 ms)
+INFO:root:[12,   384/ 1053] - train_loss: 0.2434 -[wd: 4.00e-02] [lr: 1.57e-05][max mem allocated: 5.61e+04] (5684.5 ms)
+INFO:root:[12,   512/ 1053] - train_loss: 0.2431 -[wd: 4.00e-02] [lr: 1.58e-05][max mem allocated: 5.61e+04] (5678.8 ms)
+INFO:root:[12,   640/ 1053] - train_loss: 0.2428 -[wd: 4.00e-02] [lr: 1.58e-05][max mem allocated: 5.61e+04] (5675.7 ms)
+INFO:root:[12,   768/ 1053] - train_loss: 0.2426 -[wd: 4.00e-02] [lr: 1.59e-05][max mem allocated: 5.61e+04] (5677.4 ms)
+INFO:root:[12,   896/ 1053] - train_loss: 0.2423 -[wd: 4.00e-02] [lr: 1.60e-05][max mem allocated: 5.61e+04] (5680.6 ms)
+INFO:root:[12,  1024/ 1053] - train_loss: 0.2420 -[wd: 4.00e-02] [lr: 1.60e-05][max mem allocated: 5.61e+04] (5676.3 ms)
+INFO:root:Loss 0.2398
+INFO:root:Epoch 13
+INFO:root:[13,     0/ 1053] - train_loss: 0.2399 -[wd: 4.00e-02] [lr: 1.60e-05][max mem allocated: 5.61e+04] (5738.3 ms)
+INFO:root:[13,   128/ 1053] - train_loss: 0.2397 -[wd: 4.00e-02] [lr: 1.61e-05][max mem allocated: 5.61e+04] (5674.0 ms)
+INFO:root:[13,   256/ 1053] - train_loss: 0.2395 -[wd: 4.00e-02] [lr: 1.61e-05][max mem allocated: 5.61e+04] (5666.8 ms)
+INFO:root:[13,   384/ 1053] - train_loss: 0.2394 -[wd: 4.00e-02] [lr: 1.62e-05][max mem allocated: 5.61e+04] (5666.0 ms)
+INFO:root:[13,   512/ 1053] - train_loss: 0.2392 -[wd: 4.00e-02] [lr: 1.63e-05][max mem allocated: 5.61e+04] (5670.5 ms)
+INFO:root:[13,   640/ 1053] - train_loss: 0.2390 -[wd: 4.00e-02] [lr: 1.63e-05][max mem allocated: 5.61e+04] (5670.1 ms)
+INFO:root:[13,   768/ 1053] - train_loss: 0.2388 -[wd: 4.00e-02] [lr: 1.64e-05][max mem allocated: 5.61e+04] (5675.0 ms)
+INFO:root:[13,   896/ 1053] - train_loss: 0.2386 -[wd: 4.00e-02] [lr: 1.65e-05][max mem allocated: 5.61e+04] (5677.8 ms)
+INFO:root:[13,  1024/ 1053] - train_loss: 0.2385 -[wd: 4.00e-02] [lr: 1.65e-05][max mem allocated: 5.61e+04] (5677.7 ms)
+INFO:root:Loss 0.2368
+INFO:root:Epoch 14
+INFO:root:[14,     0/ 1053] - train_loss: 0.2368 -[wd: 4.00e-02] [lr: 1.65e-05][max mem allocated: 5.61e+04] (5330.6 ms)
+INFO:root:[14,   128/ 1053] - train_loss: 0.2369 -[wd: 4.00e-02] [lr: 1.66e-05][max mem allocated: 5.61e+04] (5641.9 ms)
+INFO:root:[14,   256/ 1053] - train_loss: 0.2368 -[wd: 4.00e-02] [lr: 1.66e-05][max mem allocated: 5.61e+04] (5656.7 ms)
+INFO:root:[14,   384/ 1053] - train_loss: 0.2366 -[wd: 4.00e-02] [lr: 1.67e-05][max mem allocated: 5.61e+04] (5685.0 ms)
+INFO:root:[14,   512/ 1053] - train_loss: 0.2365 -[wd: 4.00e-02] [lr: 1.68e-05][max mem allocated: 5.61e+04] (5694.5 ms)
+INFO:root:[14,   640/ 1053] - train_loss: 0.2364 -[wd: 4.00e-02] [lr: 1.68e-05][max mem allocated: 5.61e+04] (5697.9 ms)
+INFO:root:[14,   768/ 1053] - train_loss: 0.2363 -[wd: 4.00e-02] [lr: 1.69e-05][max mem allocated: 5.61e+04] (5701.5 ms)
+INFO:root:[14,   896/ 1053] - train_loss: 0.2361 -[wd: 4.00e-02] [lr: 1.70e-05][max mem allocated: 5.61e+04] (5707.8 ms)
+INFO:root:[14,  1024/ 1053] - train_loss: 0.2360 -[wd: 4.00e-02] [lr: 1.70e-05][max mem allocated: 5.61e+04] (5707.2 ms)
+INFO:root:Loss 0.2348
+INFO:root:Epoch 15
+INFO:root:[15,     0/ 1053] - train_loss: 0.2350 -[wd: 4.00e-02] [lr: 1.70e-05][max mem allocated: 5.61e+04] (5457.8 ms)
+INFO:root:[15,   128/ 1053] - train_loss: 0.2350 -[wd: 4.00e-02] [lr: 1.71e-05][max mem allocated: 5.61e+04] (5660.5 ms)
+INFO:root:[15,   256/ 1053] - train_loss: 0.2349 -[wd: 4.00e-02] [lr: 1.71e-05][max mem allocated: 5.61e+04] (5683.7 ms)

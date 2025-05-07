@@ -34,9 +34,10 @@ def visualize_global_attention_on_image(image, attn_map, patch_size=64, save_pat
     # 2. Aggregate attention received by each patch (i.e., sum over rows → what each token receives)
     global_attention = attn_map.sum(dim=0)  # [1024]
 
+
     # 3. Normalize
     global_attention = (global_attention - global_attention.min()) / (global_attention.max() - global_attention.min())
-    global_attention = global_attention.reshape(32, 32).detach().cpu().numpy()
+    global_attention = global_attention.reshape(48, 32).detach().cpu().numpy() # if image is not squared has to be adjusted
 
     # 4. Resize to match image
     attn_map_resized = TF.resize(TF.to_pil_image(global_attention), image.size, interpolation=Image.BICUBIC)
@@ -66,33 +67,34 @@ else:
 images = ['RNNB-8-8-20240118.jpg']
 images = ['GUARDEN-AMB-PR13-1-2-20240417.jpg']
 #images = ['CBN-can-A6-20230705.jpg']
-epochs = [5,10,15,20,25,30,35,40,45,50,55,60]
+epochs = [5,10]
 
 #epoch_no = 40
+
+experiment_code = 2
 
 model = timm.create_model('vit_base_patch14_reg4_dinov2.lvd142m', pretrained=False, num_classes=len(cid_to_spid), checkpoint_path=pretrained_path)
 model.head = torch.nn.Identity() # Replace classification head by identity layer for feature extraction
 model.to(device)
 
+input_resolution = (3072, 2048)
 data_config = timm.data.resolve_model_data_config(model)
-transform = build_test_transform(data_config, n=64)
+transform = build_test_transform(data_config, input_resolution=input_resolution, n=64)
 
-r_path = '/home/rtcalumby/adam/luciano/PlantCLEF2025/logs/experiment_0/'
-
+r_path = f'/home/rtcalumby/adam/luciano/PlantCLEF2025/logs/experiment_{experiment_code}/'
 pilot = True
 
 if not pilot:
-    epochs = [5,10,15,20,25,30,45,50,55,60,65]
     r_path = '/home/rtcalumby/adam/luciano/PlantCLEF2025/logs/experiment_1/'
 
 for epoch_no in epochs:
     if pilot:
-        checkpoint = torch.load(r_path+f"experiment_0-ep{epoch_no}.pth.tar", map_location=torch.device('cpu'))
-        ViT = PilotVisionTransformer(img_size=[2048,2048], pretrained_patch_embedder=model,patch_size=patch_size, embed_dim=768, depth=6)
+        checkpoint = torch.load(r_path+f"experiment_{experiment_code}-ep{epoch_no}.pth.tar", map_location=torch.device('cpu'))
+        ViT = PilotVisionTransformer(img_size=[input_resolution[0], input_resolution[1]], pretrained_patch_embedder=model,patch_size=patch_size, embed_dim=768, depth=6)
         print('Loading Vision Transformer:', ViT)        
     else:
-        checkpoint = torch.load(r_path+f"experiment_1-ep{epoch_no}.pth.tar", map_location=torch.device('cpu'))
-        ViT = VisionTransformer(img_size=[2048,2048], pretrained_patch_embedder=None, patch_size=patch_size, embed_dim=768, depth=6)
+        checkpoint = torch.load(r_path+f"experiment_{experiment_code}-ep{epoch_no}.pth.tar", map_location=torch.device('cpu'))
+        ViT = VisionTransformer(img_size=[input_resolution[0],input_resolution[1]], pretrained_patch_embedder=None, patch_size=patch_size, embed_dim=768, depth=6)
         print('Loading Vision Transformer:', ViT)                
 
     pretrained_dict = checkpoint['custom_vit']
@@ -108,7 +110,9 @@ for epoch_no in epochs:
     print('img tensor:', img_tensor.size())
 
     if pilot:
-        x, attn = ViT(img_tensor, return_attention=True)
+        with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=True):
+            with torch.inference_mode():
+                x, attn = ViT(img_tensor, return_attention=True)
     else:
         with torch.inference_mode():
             dino_patch_embeddings = model(img_tensor).unsqueeze(0)
@@ -116,12 +120,14 @@ for epoch_no in epochs:
     print('X size:', x.size())
     print('len attn:', len(attn))
     print('attn size:', attn[0][1].size())
-    attn_map = (attn[5][1] + attn[4][1]+ attn[3][1])/3
+    num_blocks = 6
+    attn_map = torch.stack([attn[i][1] for i in range(num_blocks)]).mean(0)
+
     if pilot:
         #visualize_global_attention_on_image(img, attn_map=attn[5][1],save_path=f'attention/pilot/pilot_epoch_{epoch_no}_block_6.jpg')
-        visualize_global_attention_on_image(img, attn_map=attn_map,save_path=f'attention/pilot/pilot_epoch_{epoch_no}_block_6_5_AVG.jpg')
+        visualize_global_attention_on_image(img, attn_map=attn_map,save_path=f'attention/pilot/pilot_{experiment_code}_epoch_{epoch_no}_AVG.jpg')
     else:
-        visualize_global_attention_on_image(img, attn_map=attn[5][1],save_path=f'attention/dynamic/dynamic_epoch_{epoch_no}_block_6.jpg')
+        visualize_global_attention_on_image(img, attn_map=attn[5][1],save_path=f'attention/dynamic/dynamic_{experiment_code}_epoch_{epoch_no}_AVG.jpg')
 exit(0)
 
 
