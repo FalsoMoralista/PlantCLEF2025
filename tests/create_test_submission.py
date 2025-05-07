@@ -126,6 +126,7 @@ def get_high_attention_crop_positions(attn_scores, crop_size, image_size, thresh
     Returns:
         Tensor of shape (N, 2) with top-left corner pixel positions (x, y)
     """
+    device = attn_scores.device
     num_patches_y, num_patches_x = attn_scores.shape
     H, W = image_size
 
@@ -136,8 +137,8 @@ def get_high_attention_crop_positions(attn_scores, crop_size, image_size, thresh
     high_attn_mask = (attn_scores.flatten() >= threshold)
 
     # Grid of patch top-left corners
-    x_indices = torch.arange(0, num_patches_x) * crop_size
-    y_indices = torch.arange(0, num_patches_y) * crop_size
+    x_indices = torch.arange(0, num_patches_x, device=device) * crop_size
+    y_indices = torch.arange(0, num_patches_y, device=device) * crop_size
     y_grid, x_grid = torch.meshgrid(y_indices, x_indices, indexing='ij')
     positions = torch.stack([x_grid.flatten(), y_grid.flatten()], dim=1)  # shape (N, 2)
 
@@ -241,7 +242,17 @@ dino_cls = timm.create_model('vit_base_patch14_reg4_dinov2.lvd142m', pretrained=
 dino_cls.to(device)
 
 data_config = timm.data.resolve_model_data_config(model)
-transform = build_test_transform(data_config, n=64)
+#transform = build_test_transform(data_config, n=64)
+
+test_dataset, test_dataloader, dist_sampler = build_test_dataset(image_folder=test_dir,
+                                            data_config=data_config,
+                                            input_resolution=(2048,2048),
+                                            num_workers=32,
+                                            n=64,
+                                            world_size=1,
+                                            rank=0,
+                                            shuffle=False,
+                                            batch_size=1)
 
 r_path = '/home/rtcalumby/adam/luciano/PlantCLEF2025/logs/experiment_0/'
 
@@ -265,15 +276,18 @@ for epoch_no in epochs:
     ViT.linear = torch.nn.Identity()
     ViT.to(device)
     
-    for i, image_name in enumerate(images):
+    for itr, (img_tensor, _, image_name) in enumerate(test_dataloader):
+    #for i, image_name in enumerate(images):
     #image_name = images[0]
     #img = Image.open(f'../pretrained_models/{image_name}')
-        img = Image.open(f'{test_dir}/test/{image_name}')
-        img_tensor = transform(img)#.unsqueeze(0)
         img_tensor = img_tensor.to(device)
-        #print('img tensor:', img_tensor.size())
+        image_name = image_name[0]
+        img = Image.open(f'{test_dir}/test/{image_name}')
+        img = std_transform(img).to(device)
+        #img_tensor = transform(img)#.unsqueeze(0)
+        #img_tensor = img_tensor.to(device)
         with torch.inference_mode():
-            x, attn = ViT(img_tensor, return_attention=True)
+            _, attn = ViT(img_tensor.squeeze(0), return_attention=True)
         del img_tensor
         #print('X size:', x.size())
         #print('len attn:', len(attn))
@@ -282,21 +296,20 @@ for epoch_no in epochs:
         num_blocks = 6
         attn_map = torch.stack([attn[i][1] for i in range(num_blocks)]).mean(0)
         
-        global_attention = attn_map.clone()
+        global_attention = attn_map.clone().detach()
         # 1. Average over heads
-        global_attention = global_attention.mean(dim=1)[0]  # Shape: [1024, 1024]
+        global_attention = attn_map.mean(dim=1)[0]  # Shape: [1024, 1024]
 
         # 2. Aggregate attention received by each patch (i.e., sum over rows → what each token receives)
         global_attention = global_attention.sum(dim=0)  # [1024]
 
-
         # 3. Normalize
         eps = 1e-6
         global_attention = (global_attention - global_attention.min()) / (global_attention.max() - global_attention.min() + eps)
-        global_attention = global_attention.reshape(32, 32).detach().cpu().numpy()
+        global_attention = global_attention.reshape(32, 32) #.detach().cpu().numpy()
 
         high_attn_positions = get_high_attention_crop_positions(
-            attn_scores=torch.tensor(global_attention),  # from your original attention map
+            attn_scores=global_attention,
             crop_size=64,
             image_size=(2048, 2048),
             threshold=0.6
@@ -304,11 +317,12 @@ for epoch_no in epochs:
 
         # Crop and resize selected regions
         selected_crops = crop_at_positions(
-            img=std_transform(img),                # tensor (C, 2048, 2048)
+            img=img,                # tensor (C, 2048, 2048)
             positions=high_attn_positions, # pixel coordinates (x, y)
             crop_size=64,
             output_size=518
-        ).to(device)        
+        )#.to(device)
+
         #print('selected_crops', selected_crops.size())
         B,C,H,W = selected_crops.size() 
         
@@ -334,7 +348,7 @@ for epoch_no in epochs:
         #print(predicted_items)
     print('predicted items length:', len(predicted_items))
 
-    with open('predictions.csv', mode='w', newline='') as file:
+    with open('predictions_1.csv', mode='w', newline='') as file:
         writer = csv.writer(file, quoting=csv.QUOTE_MINIMAL)
         writer.writerow(['quadrat_id', 'species_ids'])  # Header
 
