@@ -7,7 +7,6 @@ import timm
 
 from src.helper import load_class_mapping
 from datasets.pc2025 import build_test_dataset, build_test_transform
-from visualizer import AttentionMapVisualizer
 
 import faiss
 import faiss.contrib.torch_utils
@@ -15,6 +14,60 @@ import faiss.contrib.torch_utils
 from src.models.custom_vision_transformer import PilotVisionTransformer, VisionTransformer
 from PIL import Image
 import matplotlib.pyplot as plt
+
+def mask_image_from_attention(
+    image, attn_map, patch_size=64, threshold=0.2, replace_mode='grayscale', save_path=None
+):
+    """
+    Visualizes global attention as a heatmap and masks low-attention regions in the original image.
+
+    image: PIL image (2048x2048)
+    attn_map: Tensor of shape (1, num_heads, 1024, 1024)
+    threshold: Float in [0, 1]. Attention scores below this are masked.
+    replace_mode: 'grayscale' or 'black'
+    """
+    import torchvision.transforms.functional as TF
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from PIL import Image
+
+    # 1. Compute mean attention over heads
+    attn_map = attn_map.mean(dim=1)[0]  # Shape: [1024, 1024]
+
+    # 2. Global attention received per patch (sum over rows)
+    global_attention = attn_map.sum(dim=0)  # [1024]
+
+    # 3. Normalize
+    global_attention = (global_attention - global_attention.min()) / (global_attention.max() - global_attention.min())
+    global_attention = global_attention.reshape(48, 32)  # Shape: (H, W)
+
+    # 4. Upsample to full image size (2048x2048)
+    global_attention_np = global_attention.unsqueeze(0).unsqueeze(0)  # [1, 1, 32, 32]
+    attn_resized = torch.nn.functional.interpolate(global_attention_np, size=image.size[::-1], mode='bilinear')[0, 0]
+
+    # 5. Convert to NumPy mask
+    mask = (attn_resized >= threshold).cpu().numpy().astype(np.uint8)  # 1 = keep, 0 = mask out
+
+    # 6. Apply mask to image
+    img_np = np.array(image)
+
+    if replace_mode == 'grayscale':
+        gray = np.dot(img_np[..., :3], [0.299, 0.587, 0.114]).astype(np.uint8)
+        gray = np.stack([gray]*3, axis=-1)
+        masked_img = img_np * mask[..., None] + gray * (1 - mask[..., None])
+    elif replace_mode == 'black':
+        masked_img = img_np * mask[..., None]
+    else:
+        raise ValueError("Unsupported replace_mode: choose 'grayscale' or 'black'")
+
+    # 7. Visualization
+    plt.figure(figsize=(12, 12))
+    plt.imshow(masked_img)
+    plt.axis('off')
+    if save_path:
+        plt.savefig(save_path, bbox_inches='tight')
+    plt.show()
+
 
 def visualize_global_attention_on_image(image, attn_map, patch_size=64, save_path=None):
     import torchvision.transforms.functional as TF
@@ -64,10 +117,10 @@ else:
     torch.cuda.set_device(device)
 
 
-images = ['RNNB-8-8-20240118.jpg']
+#images = ['RNNB-8-8-20240118.jpg']
 images = ['GUARDEN-AMB-PR13-1-2-20240417.jpg']
 #images = ['CBN-can-A6-20230705.jpg']
-epochs = [5,10]
+epochs = [5,10, 15]
 
 #epoch_no = 40
 
@@ -90,6 +143,7 @@ if not pilot:
 for epoch_no in epochs:
     if pilot:
         checkpoint = torch.load(r_path+f"experiment_{experiment_code}-ep{epoch_no}.pth.tar", map_location=torch.device('cpu'))
+        #checkpoint = torch.load(r_path+f"experiment_2_latest.pth.tar", map_location=torch.device('cpu'))
         ViT = PilotVisionTransformer(img_size=[input_resolution[0], input_resolution[1]], pretrained_patch_embedder=model,patch_size=patch_size, embed_dim=768, depth=6)
         print('Loading Vision Transformer:', ViT)        
     else:
@@ -126,74 +180,8 @@ for epoch_no in epochs:
     if pilot:
         #visualize_global_attention_on_image(img, attn_map=attn[5][1],save_path=f'attention/pilot/pilot_epoch_{epoch_no}_block_6.jpg')
         visualize_global_attention_on_image(img, attn_map=attn_map,save_path=f'attention/pilot/pilot_{experiment_code}_epoch_{epoch_no}_AVG.jpg')
+        mask_image_from_attention(img, threshold=0.6, attn_map=attn_map,save_path=f'attention/pilot/gray_pilot_{experiment_code}_epoch_{epoch_no}_AVG.jpg')
     else:
         visualize_global_attention_on_image(img, attn_map=attn[5][1],save_path=f'attention/dynamic/dynamic_{experiment_code}_epoch_{epoch_no}_AVG.jpg')
 exit(0)
-
-
-
-
-# Create visualizer
-visualizer = AttentionMapVisualizer(model, patch_size=patch_size, img_size=(2048,2048))
-
-# Visualize attention for each layer and head
-for layer_idx in range(len(model.blocks)):
-    # Average of all heads
-    fig = visualizer.visualize_average_attention(
-        image_path='../pretrained_models/RNNB-8-8-20240118.jpg',
-        img_tensor=img_tensor, 
-        layer_idx=layer_idx,
-        save_path=f"attention/attention_avg_layer_{layer_idx}.png"
-    )
-    plt.close(fig)
-    
-    # For specific heads
-    num_heads = model.num_heads
-    for head_idx in range(num_heads):
-        fig = visualizer.visualize_average_attention(
-            image_path='../pretrained_models/RNNB-8-8-20240118.jpg', 
-            img_tensor=img_tensor,
-            layer_idx=layer_idx,
-            head_idx=head_idx,
-            save_path=f"attention/attention_layer_{layer_idx}_head_{head_idx}.png"
-        )
-        plt.close(fig)
-
-# Remove hooks when done
-visualizer.remove_hooks()
-
-
-#prototypes = torch.load('../proxy/prototypes.pt').to(device)
-
-#with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=True):
-#        with torch.inference_mode():
-#            output = ViT(img).squeeze(0)
-#            print('Output size', output.size())
-        
-exit(0)
-
-
-for im_id, (preprocessed_images, _, name) in enumerate(test_dataloader):
-    x = preprocessed_images.to(device)
-    y = torch.zeros_like(prototypes) # torch.randn(batch_size, 768).to(device)
-    print('y_size:', y.size())
-    with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=True):
-        with torch.inference_mode():
-            dino_features = model(x.squeeze(0)) # if batch >1 do not squeeze
-        #query_vector = dino_features.detach().clone().contiguous()
-        _, batch_assignments = gpu_index.search(dino_features.contiguous(), 1)
-        batch_assignments = batch_assignments.squeeze(1)
-        y[batch_assignments] = prototypes[batch_assignments].clone() # fill y with correspondent batch assignments
-        output = ViT(dino_features.unsqueeze(0)).squeeze(0)
-        print('output:', output.T.size())
-        loss = criterion(output.T, y)
-        print('Allocated Memory with loss computation:', (torch.cuda.memory_allocated() / 1024.**3), ' GB')
-    # -- Deals with mixed precision
-    scaler.scale(loss).backward(create_graph=False, retain_graph=False) 
-    scaler.unscale_(optimizer)
-    scaler.step(optimizer)
-    scaler.update()        
-    # -- 
-    print('Max Memory Allocated so far [mem: %.2e] :' %(torch.cuda.max_memory_allocated() / 1024.**3), ' GB')
-    break
 

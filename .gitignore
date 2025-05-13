@@ -6,3 +6,4 @@ nohup2.out
 *.__
 __pycache__
 pretrained_models/*
+tests/logits/*

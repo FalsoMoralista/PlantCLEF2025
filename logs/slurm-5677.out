@@ -1,6 +1,0 @@
-Device found
-Total features gathered 1408034, problem size: 1408034
-Training K-means with torch.Size([1408034, 768])
-K-Means free energy 274491776.0
-Kmeans centroids torch.Size([7806, 768])
-Centroids: torch.Size([7806, 768])

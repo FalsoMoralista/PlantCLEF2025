@@ -1,9 +1,9 @@
 # Configs
-experiment_code: 2
+experiment_code: 3
 k_means:
   K: 7806
 patches:
-  N: 64
+  N: 128
 num_workers: 16
 base_dir: /home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/
 pretrained_path: pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar
@@ -16,11 +16,11 @@ batch_size: 1
 gradient_accumulation: 128
 
 optimization:
-  epochs: 120
+  epochs: 50
   final_lr: 1.0e-06
   final_weight_decay: 0.4
   ipe_scale: 1.0
-  lr: 0.001
-  start_lr: 0.00001
-  warmup: 15
+  lr: 1.0e-3
+  start_lr: 5.0e-6
+  warmup: 20
   weight_decay: 0.04

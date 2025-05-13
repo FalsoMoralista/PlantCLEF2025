@@ -127,8 +127,8 @@ def main(args):
 
     test_dataset, test_dataloader, dist_sampler = build_test_dataset(image_folder=test_dir,
                                                 data_config=data_config,
-                                                input_resolution=(3072,2048),
-                                                num_workers=12,
+                                                input_resolution=(3712,3712),
+                                                num_workers=8,
                                                 n=patch_size,
                                                 world_size=world_size,
                                                 rank=rank,
@@ -137,7 +137,7 @@ def main(args):
     use_bfloat16 = True
     ipe = len(test_dataloader)
     print('Test dataset, length:', ipe * batch_size)
-    ViT = PilotVisionTransformer(img_size=[3072,2048], pretrained_patch_embedder=model, patch_size=patch_size, embed_dim=768, depth=6)
+    ViT = PilotVisionTransformer(img_size=[3712,3712], pretrained_patch_embedder=model, patch_size=patch_size, embed_dim=768, depth=6)
     logger.info('Loading Vision Transformer: %s' %(ViT))
     ViT.to(device)
     
@@ -149,7 +149,7 @@ def main(args):
         start_lr=start_lr,
         ref_lr=lr,
         final_lr=final_lr,
-        iterations_per_epoch=ipe,
+        iterations_per_epoch=ipe if accum_iter == 1 else ipe // accum_iter,
         warmup=warmup,
         num_epochs=num_epochs,
         ipe_scale=ipe_scale,
@@ -262,23 +262,3 @@ def main(args):
         # -- end of epoch
         save_checkpoint(epoch+1)
         logger.info('Loss %.4f' % loss)        
-
-
-    #img = None
-    #if 'https://' in args.image or 'http://' in  args.image:
-    #    img = Image.open(urlopen(args.image))
-    #elif args.image != None:
-    #    img = Image.open(args.image)
-        
-    #if img != None:
-    #    img = transforms(img).unsqueeze(0)
-    #    img = img.to(device)
-    #    output = model(img)  # unsqueeze single image into batch of 1
-    #    top5_probabilities, top5_class_indices = torch.topk(output.softmax(dim=1) * 100, k=5)
-    #    top5_probabilities = top5_probabilities.cpu().detach().numpy()
-    #    top5_class_indices = top5_class_indices.cpu().detach().numpy()
-
-    #    for proba, cid in zip(top5_probabilities[0], top5_class_indices[0]):
-    #        species_id = cid_to_spid[cid]
-    #        species = spid_to_sp[species_id]
-    #        print(species_id, species, proba)
