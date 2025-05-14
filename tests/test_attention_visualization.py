@@ -11,12 +11,12 @@ from datasets.pc2025 import build_test_dataset, build_test_transform
 import faiss
 import faiss.contrib.torch_utils
 
-from src.models.custom_vision_transformer import PilotVisionTransformer, VisionTransformer
+from src.models.custom_vision_transformer import PilotVisionTransformer
 from PIL import Image
 import matplotlib.pyplot as plt
 
 def mask_image_from_attention(
-    image, attn_map, patch_size=64, threshold=0.2, replace_mode='grayscale', save_path=None
+    image, attn_map, patch_size=32, threshold=0.2, replace_mode='grayscale', save_path=None
 ):
     """
     Visualizes global attention as a heatmap and masks low-attention regions in the original image.
@@ -108,7 +108,7 @@ def visualize_global_attention_on_image(image, attn_map, patch_size=64, save_pat
 pretrained_path = '/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/pretrained_models/vit_base_patch14_reg4_dinov2_lvd142m_pc24_onlyclassifier_then_all/model_best.pth.tar'
 cid_to_spid = load_class_mapping('/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/pretrained_models/class_mapping.txt')
 test_dir = '/home/rtcalumby/adam/luciano/PlantCLEF2025/test_dataset/'
-patch_size = 64
+patch_size = 64 # 64
 batch_size = 1
 if not torch.cuda.is_available():
     device = torch.device('cpu')
@@ -117,10 +117,10 @@ else:
     torch.cuda.set_device(device)
 
 
-#images = ['RNNB-8-8-20240118.jpg']
-images = ['GUARDEN-AMB-PR13-1-2-20240417.jpg']
+images = ['RNNB-8-8-20240118.jpg']
+#images = ['GUARDEN-AMB-PR13-1-2-20240417.jpg']
 #images = ['CBN-can-A6-20230705.jpg']
-epochs = [5,10, 15]
+epochs = [5,10, 15,20, 25]
 
 #epoch_no = 40
 
@@ -130,7 +130,7 @@ model = timm.create_model('vit_base_patch14_reg4_dinov2.lvd142m', pretrained=Fal
 model.head = torch.nn.Identity() # Replace classification head by identity layer for feature extraction
 model.to(device)
 
-input_resolution = (3072, 2048)
+input_resolution = (3072,2048)
 data_config = timm.data.resolve_model_data_config(model)
 transform = build_test_transform(data_config, input_resolution=input_resolution, n=64)
 
@@ -178,9 +178,9 @@ for epoch_no in epochs:
     attn_map = torch.stack([attn[i][1] for i in range(num_blocks)]).mean(0)
 
     if pilot:
-        #visualize_global_attention_on_image(img, attn_map=attn[5][1],save_path=f'attention/pilot/pilot_epoch_{epoch_no}_block_6.jpg')
-        visualize_global_attention_on_image(img, attn_map=attn_map,save_path=f'attention/pilot/pilot_{experiment_code}_epoch_{epoch_no}_AVG.jpg')
-        mask_image_from_attention(img, threshold=0.6, attn_map=attn_map,save_path=f'attention/pilot/gray_pilot_{experiment_code}_epoch_{epoch_no}_AVG.jpg')
+        size = input_resolution[0] // patch_size
+        visualize_global_attention_on_image(img, patch_size=size ,attn_map=attn_map,save_path=f'attention/pilot/{experiment_code}/pilot_{experiment_code}_epoch_{epoch_no}_AVG.jpg')
+        mask_image_from_attention(img, threshold=0.6,patch_size=size,  attn_map=attn_map,save_path=f'attention/pilot/{experiment_code}/gray_pilot_{experiment_code}_epoch_{epoch_no}_AVG.jpg')
     else:
         visualize_global_attention_on_image(img, attn_map=attn[5][1],save_path=f'attention/dynamic/dynamic_{experiment_code}_epoch_{epoch_no}_AVG.jpg')
 exit(0)

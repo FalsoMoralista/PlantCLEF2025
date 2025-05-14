@@ -259,7 +259,7 @@ def visualize_clustered_crops(selected_crops, cluster_assignments, image_name, s
         plt.show()
 
 
-def get_high_attention_crop_positions(attn_scores, crop_size, image_size, threshold=0.2):
+def get_high_attention_crop_positions(attn_scores, crop_size, image_size, attn_shape=[32,32],  threshold=0.2):
     """
     Returns the (x, y) pixel positions of patches with attention >= threshold.
 
@@ -282,7 +282,7 @@ def get_high_attention_crop_positions(attn_scores, crop_size, image_size, thresh
     # 3. Min max normalization
     eps = 1e-6
     attn_scores = (attn_scores - attn_scores.min()) / (attn_scores.max() - attn_scores.min() + eps)
-    attn_scores = attn_scores.reshape(32, 32) # TODO: adjust
+    attn_scores = attn_scores.reshape(attn_shape[0], attn_shape[1])
 
     device = attn_scores.device
     num_patches_y, num_patches_x = attn_scores.shape
@@ -331,6 +331,39 @@ def crop_at_positions(crops, positions, crop_size=64, image_size=2048):
         return None
 
     return torch.stack(selected)
+
+def non_square_crop_at_positions(crops, positions, crop_size=64, image_height=3072, image_width=2048):
+    """
+    Selects pre-resized crop patches from an image of shape (image_height, image_width)
+    based on (x, y) positions.
+
+    Args:
+        crops (Tensor): Tensor of shape (Hc * Wc, 3, H, W) representing pre-resized crop patches.
+        positions (Tensor): Tensor of shape (N, 2), (x, y) top-left positions in the original image space.
+        crop_size (int): Original crop size (default: 64).
+        image_height (int): Height of the original image (default: 3072).
+        image_width (int): Width of the original image (default: 2048).
+
+    Returns:
+        Tensor of selected crops (N, 3, H, W)
+    """
+    grid_height = image_height // crop_size  # 3072 // 64 = 48
+    grid_width = image_width // crop_size    # 2048 // 64 = 32
+
+    selected = []
+    for x, y in positions:
+        x_idx = int(x) // crop_size
+        y_idx = int(y) // crop_size
+        flat_idx = y_idx * grid_width + x_idx
+
+        if 0 <= x_idx < grid_width and 0 <= y_idx < grid_height and 0 <= flat_idx < crops.shape[0]:
+            selected.append(crops[flat_idx])
+    
+    if not selected:
+        return None
+
+    return torch.stack(selected)
+
 
 def plot_crops_in_grid_positions(crops, positions, image_size, crop_size, save_path):
     """

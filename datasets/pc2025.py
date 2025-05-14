@@ -102,6 +102,7 @@ def build_test_dataset(image_folder, data_config, input_resolution=(2048,2048), 
         collate_fn=None,
         sampler=dist_sampler if world_size > 1 else None,
         batch_size=batch_size,
+        prefetch_factor=1,
         drop_last=False,
         pin_memory=False,
         num_workers=num_workers)    
