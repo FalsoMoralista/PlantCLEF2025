@@ -6,7 +6,7 @@ import os
 from torchvision import datasets, transforms
 from timm.data import create_transform
 
-from util.crop import GridCropAndResize
+from util.crop import GridCropAndResize, GridCrop
 
 class CustomImageFolder(datasets.ImageFolder):
     def __init__(self, root, transform=None):
@@ -31,7 +31,7 @@ def build_test_transform(data_config, input_resolution=(2048,2048), n=None):
         transforms.Resize(input_resolution, interpolation=PIL.Image.BICUBIC),  # Optional: scale to be divisible by 16
         transforms.ToTensor(),  # Convert to tensor: (C, H, W)
         transforms.Normalize(mean=data_config['mean'], std=data_config['std']),
-        GridCropAndResize(crop_size=n),
+        GridCrop(crop_size=n)#GridCropAndResize(crop_size=n),
     ])
 
     return transform
@@ -85,7 +85,7 @@ def build_train_dataset(image_folder, world_size, rank, data_config, batch_size=
 
 def build_test_dataset(image_folder, data_config, input_resolution=(2048,2048), batch_size=1, num_workers=16, n=None, world_size=0, rank=None, shuffle=False):
     
-    transform = build_test_transform(data_config, input_resolution=input_resolution ,n=n)
+    transform = build_test_transform(data_config, input_resolution=input_resolution, n=n)
 
     dataset = CustomImageFolder(image_folder, transform=transform)
     

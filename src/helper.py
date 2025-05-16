@@ -16,6 +16,7 @@ import torchvision.transforms.functional as TF
 
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 from torchvision.utils import make_grid
 
@@ -396,3 +397,75 @@ def plot_crops_in_grid_positions(crops, positions, image_size, crop_size, save_p
     if save_path:
         plt.savefig(save_path, bbox_inches='tight')
     plt.show()
+
+
+
+def visualize_patch_grids(patch_crops_list, K, save_dir, base_filename='high_attn_patch',
+                          mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]):
+    """
+    Save each KxK patch grid as an image, denormalizing if needed.
+
+    Args:
+        patch_crops_list (list of tensors): Each tensor is (K*K, 3, H, W)
+        K (int): Grid size
+        save_dir (str): Directory to save images
+        base_filename (str): Base filename to use
+        mean, std (list): Normalization values used on input tensors
+    """
+    os.makedirs(save_dir, exist_ok=True)
+
+    def denormalize(tensor, mean, std):
+        """
+        Denormalizes a batch of tensors (N, C, H, W) or a single tensor (C, H, W)
+        using the given mean and std.
+        """
+        mean = torch.tensor(mean).view(-1, 1, 1).to(tensor.device)
+        std = torch.tensor(std).view(-1, 1, 1).to(tensor.device)
+        return tensor * std + mean
+
+    for idx, crop_tensor in enumerate(patch_crops_list):
+        crop_tensor = denormalize(crop_tensor, mean, std).clamp(0, 1)
+        grid = make_grid(crop_tensor, nrow=K, padding=2, pad_value=0.0)  # 1-> white padding 0-> black
+        img = TF.to_pil_image(grid.cpu())
+        img.save(os.path.join(save_dir, f"{base_filename}_{idx:03d}.png"))
+
+
+def get_kxk_neighborhood_patches(high_attn_positions, K, patch_grid_shape, img_tensor):
+    """
+    For each high-attention position (index in patch grid), return a KxK neighborhood of patches.
+
+    Args:
+        high_attn_positions (Tensor): Pixel positions of high attention patches (x, y).
+        K (int): Neighborhood size (must be odd).
+        patch_grid_shape (tuple): (H_patches, W_patches), e.g., (48, 32)
+        img_tensor (Tensor): Shape (1536, 3, 64, 64)
+
+    Returns:
+        list of tensors: Each element is a tensor of shape (K*K, 3, 64, 64)
+    """
+    assert K % 2 == 1, "K must be an odd number"
+    
+    H_patches, W_patches = patch_grid_shape
+    patch_crops = []
+
+    # Precompute index grid
+    for x_pix, y_pix in high_attn_positions:
+        i = y_pix.item() // 64  # row
+        j = x_pix.item() // 64  # col
+
+        neighbors = []
+
+        for dy in range(-(K // 2), K // 2 + 1):
+            for dx in range(-(K // 2), K // 2 + 1):
+                ni = i + dy
+                nj = j + dx
+                if 0 <= ni < H_patches and 0 <= nj < W_patches:
+                    idx = ni * W_patches + nj
+                    neighbors.append(img_tensor[idx])
+                else:
+                    # If outside bounds, pad with black image
+                    neighbors.append(torch.zeros_like(img_tensor[0]))
+
+        patch_crops.append(torch.stack(neighbors))  # (K*K, 3, 64, 64)
+
+    return patch_crops
