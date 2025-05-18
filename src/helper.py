@@ -469,3 +469,39 @@ def get_kxk_neighborhood_patches(high_attn_positions, K, patch_grid_shape, img_t
         patch_crops.append(torch.stack(neighbors))  # (K*K, 3, 64, 64)
 
     return patch_crops
+
+
+def plot_and_save_stacked_image(image_tensor, save_path, denormalize=True):
+    """
+    Plot and save an image tensor of shape (1, 3, H, W).
+    
+    Args:
+        image_tensor (Tensor): Tensor of shape (1, 3, H, W)
+        save_path (str): File path to save the image
+        denormalize (bool): Whether to denormalize using ImageNet stats
+    """
+    assert image_tensor.ndim == 4 and image_tensor.shape[1] == 3, "Expected shape (1, 3, H, W)"
+    
+    # Denormalize if needed
+    if denormalize:
+        imagenet_mean = torch.tensor([0.485, 0.456, 0.406], device=image_tensor.device).view(1, 3, 1, 1)
+        imagenet_std = torch.tensor([0.229, 0.224, 0.225], device=image_tensor.device).view(1, 3, 1, 1)
+        image_tensor = image_tensor * imagenet_std + imagenet_mean
+        image_tensor = torch.clamp(image_tensor, 0, 1)
+
+    # Move to CPU and convert to PIL
+    img_np = image_tensor.squeeze(0).permute(1, 2, 0).cpu().numpy()  # (H, W, 3)
+    img_pil = Image.fromarray((img_np * 255).astype('uint8'))
+
+    # Plot
+    plt.figure(figsize=(5, 5))
+    plt.imshow(img_pil)
+    plt.axis('off')
+    plt.tight_layout()
+    
+    # Ensure directory exists
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+
+    # Save
+    img_pil.save(save_path)
+    print(f"Image saved to {save_path}")
