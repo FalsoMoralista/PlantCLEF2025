@@ -87,7 +87,7 @@ resources = faiss.StandardGpuResources()
 config = faiss.GpuIndexFlatConfig()
 config.device = 0
 
-threshold = 0.7
+threshold = 0.6
 for epoch_no in epochs:
     checkpoint = torch.load(r_path+f"experiment_{experiment_code}-ep{epoch_no}.pth.tar", map_location=torch.device('cpu'))
     ViT = PilotVisionTransformer(img_size=[input_resolution[0],input_resolution[1]], pretrained_patch_embedder=model,patch_size=patch_size, embed_dim=768, depth=6)
@@ -135,7 +135,7 @@ for epoch_no in epochs:
             threshold=threshold
         )        
 
-        K = 9
+        K = 5
         patch_crops_list = get_kxk_neighborhood_patches(
             high_attn_positions=high_attn_positions,
             K=K,
@@ -149,7 +149,7 @@ for epoch_no in epochs:
         torch.cuda.empty_cache()
 
         # Reshape (build image from a stack of neighbouring patches)
-        patch_crops_list = torch.stack(patch_crops_list)
+        patch_crops_list = torch.stack(patch_crops_list).to('cpu')
         B, _, C, H, W = patch_crops_list.shape
         patch_crops_list = patch_crops_list.view(B, K, K, C, H, W)
         patch_crops_list = patch_crops_list.permute(0, 3, 1, 4, 2, 5)  # (B, C, K, H, K, W)
@@ -161,7 +161,7 @@ for epoch_no in epochs:
             mode='bilinear',
             align_corners=False,
             antialias=True
-        ) # out -> (B, C, 518, 518)
+        ).to(device) # out -> (B, C, 518, 518)
         del patch_crops_list
 
         with torch.cuda.amp.autocast(dtype=torch.bfloat16, enabled=True):
@@ -206,6 +206,6 @@ for epoch_no in epochs:
 
     print('predicted items length:', len(logit_list))
     if not clustering:
-        torch.save(logit_list, f'logits/stack_predictions_run_{experiment_code}_ep15_treshold={threshold}.pt')
+        torch.save(logit_list, f'logits/stack_{K}_predictions_run_{experiment_code}_ep{epoch_no}_treshold={threshold}.pt')
     else:
-        torch.save(logit_list, f'logits/clus+stack_predictions_run_{experiment_code}_ep15_treshold={threshold}.pt')
+        torch.save(logit_list, f'logits/clus+stack_{K}_predictions_run_{experiment_code}_ep{epoch_no}_treshold={threshold}.pt')

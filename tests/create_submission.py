@@ -9,10 +9,12 @@ cid_to_spid = load_class_mapping('/home/rtcalumby/adam/luciano/PlantCLEF2025/Pla
 spid_to_sp = load_species_mapping('/home/rtcalumby/adam/luciano/PlantCLEF2025/PlantCLEF2025/pretrained_models/species_id_to_name.txt')
 
 thresholds = [0.6] #[0.6, 0.7]
-experiment = 0
+experiment = 2
 prob = 80
+K = 5
+epoch = 10
 for threshold in thresholds:
-    logits = torch.load(f'logits/stack_predictions_run_{experiment}_ep15_treshold={threshold}.pt')#(f'logits/pred_run_0_ep15_treshold={threshold}.pt')
+    logits = torch.load(f'logits/stack_{K}_predictions_run_{experiment}_ep{epoch}_treshold={threshold}.pt')#(f'logits/pred_run_0_ep15_treshold={threshold}.pt')
     predicted_items = []
     for key in logits.keys():
         image_predictions = []
@@ -33,7 +35,7 @@ for threshold in thresholds:
             image_predictions.append(highest[0])
         predicted_items.append((key , image_predictions))
     print('Predicted items length:', len(predicted_items))    
-    with open(f'submissions/stack_pred_run_{experiment}_ep15_prob{prob}_treshold={threshold}.csv', mode='w', newline='') as file:
+    with open(f'submissions/stack_{K}_pred_run_{experiment}_ep15_prob{prob}_treshold={threshold}.csv', mode='w', newline='') as file:
         writer = csv.writer(file, quoting=csv.QUOTE_MINIMAL)
         writer.writerow(['quadrat_id', 'species_ids'])  # Header
         for quadrat_id, species_ids in predicted_items:
